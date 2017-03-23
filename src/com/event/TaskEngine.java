@@ -11,12 +11,16 @@ public class TaskEngine implements ITaskEngine {
     private volatile boolean isRunning = false;
     private static Object sLock = new Object();
 
+    public TaskEngine(List<ITask> listTask) {
+        mTaskList = listTask;
+    }
+
     private TaskResult runEngine() {
-        ITask task = null;
-        int index = 0;
-        TaskResult execRet = TaskResult.emptyResult();
-        LogPrint.d("loop begin");
         synchronized (sLock) {
+            ITask task = null;
+            int index = 0;
+            TaskResult execRet = TaskResult.emptyResult();
+            LogPrint.d("loop begin");
             while (isRunning) {
                 switch (execRet.getRet()) {
                     case TaskResult.TASK_FINISH:
@@ -32,18 +36,13 @@ public class TaskEngine implements ITaskEngine {
                         break;
                 }
                 task = mTaskList.get(index);
-                execRet = task.exec();
+                if (task != null) {
+                    execRet = task.exec();
+                }
             }
-        }
-        sLock.notifyAll();
-        LogPrint.d("quit loop now");
-        return execRet;
-    }
-
-    @Override
-    public void regist(ITask task) {
-        synchronized (sLock) {
-            mTaskList.add(task);
+            sLock.notifyAll();
+            LogPrint.d("quit loop now");
+            return execRet;
         }
     }
 
@@ -54,9 +53,9 @@ public class TaskEngine implements ITaskEngine {
     }
 
     private void waitForTaskFinish() {
-        if (isRunning) {
-            LogPrint.d("lock need wait");
-            synchronized (sLock) {
+        synchronized (sLock) {
+            if (isRunning) {
+                LogPrint.d("lock need wait");
                 try {
                     sLock.wait();
                 } catch (InterruptedException e) {

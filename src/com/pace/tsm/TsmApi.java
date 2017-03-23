@@ -6,6 +6,9 @@ import android.content.Context;
 import com.pace.api.IApduChannel;
 
 public class TsmApi {
+    public static final int API_RUN_CROSS_DEV = 0;
+    public static final int API_RUN_LOCAL = 1;
+
     public static void regist(Context context, IApduChannel apduChannel) {
 
     }

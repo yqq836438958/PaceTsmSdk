@@ -9,6 +9,9 @@ import com.event.TaskEngine;
 import com.pace.apdutransmit.ApduProcessFactory;
 import com.pace.events.ApduProcess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TsmLauncher {
 
     private static TsmLauncher sInstance = null;
@@ -31,9 +34,10 @@ public class TsmLauncher {
     }
 
     private void init() {
-        mTaskEngine = new TaskEngine();
-        mTaskEngine.regist(TASK_APDU);
-        mTaskEngine.regist(TASK_WUP);
+        List<ITask> list = new ArrayList<ITask>();
+        list.add(TASK_APDU);
+        list.add(TASK_WUP);
+        mTaskEngine = new TaskEngine(list);
     }
 
     private void prepareCPLC() {
