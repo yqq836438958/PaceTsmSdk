@@ -1,21 +1,28 @@
 
 package com.event;
 
+import com.event.IBaseProcess;
+import com.event.ITask;
+
 import bolts.Continuation;
 import bolts.Task;
 
 public class CommonTask implements ITask {
-    private BoltsTask mBoltsTask = null;
-    private IBaseProcess mProcess = null;
+    private BaseTask mBaseTask = null;
+
+    public CommonTask(TaskContext context) {
+        mBaseTask = context.getBaseTask();
+    }
+
+    private IBaseProcess findProcess() {
+        return null;
+    }
 
     @Override
     public TaskResult exec() {
-        if (mBoltsTask == null) {
-            mBoltsTask = BoltsTask.create();
-        }
         handProcess();
-        mBoltsTask.waitForComplete();
-        return (TaskResult) mBoltsTask.getResult();
+        mBaseTask.waitForComplete();
+        return (TaskResult) mBaseTask.getResult();
     }
 
     private void handProcess() {
@@ -23,18 +30,13 @@ public class CommonTask implements ITask {
 
             @Override
             public TaskResult then(Task<TaskResult> task) throws Exception {
-                if (mProcess != null) {
-                    return mProcess.process(task.getResult());
+                IBaseProcess process = findProcess();
+                if (process != null) {
+                    return process.process(task.getResult());
                 }
                 return TaskResult.emptyResult();
             }
         };
-        mBoltsTask.append(processContinuation);
+        mBaseTask.append(processContinuation);
     }
-
-    @Override
-    public void setProcess(IBaseProcess process) {
-        mProcess = process;
-    }
-
 }

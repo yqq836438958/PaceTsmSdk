@@ -16,8 +16,6 @@ public class TsmLauncher {
 
     private static TsmLauncher sInstance = null;
     private ITaskEngine mTaskEngine = null;
-    private final ITask TASK_APDU = new CommonTask();
-    private final ITask TASK_WUP = new CommonTask();
 
     public static TsmLauncher get() {
         if (sInstance == null) {
@@ -35,8 +33,8 @@ public class TsmLauncher {
 
     private void init() {
         List<ITask> list = new ArrayList<ITask>();
-        list.add(TASK_APDU);
-        list.add(TASK_WUP);
+        // list.add(TASK_APDU);
+        // list.add(TASK_WUP);
         mTaskEngine = new TaskEngine(list);
     }
 
@@ -52,8 +50,8 @@ public class TsmLauncher {
     private void startEngine(TsmSdkParam param) {
         mTaskEngine.prepare();
         IBaseProcess process = ApduProcessFactory.get().newProcess(param);
-        TASK_APDU.setProcess(process);
-        TASK_WUP.setProcess(process);
+        // TASK_APDU.setProcess(process);
+        // TASK_WUP.setProcess(process);
         mTaskEngine.start();
     }
 }

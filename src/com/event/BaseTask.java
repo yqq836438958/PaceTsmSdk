@@ -4,18 +4,18 @@ package com.event;
 import bolts.Continuation;
 import bolts.Task;
 
-public class BoltsTask {
+public class BaseTask {
     private Task mCurTask = null;
 
-    private BoltsTask() {
+    private BaseTask() {
         mCurTask = Task.forResult(TaskResult.emptyResult());
     }
 
-    static BoltsTask create() {
-        return new BoltsTask();
+    static BaseTask create() {
+        return new BaseTask();
     }
 
-    final <TTaskResult, TContinuationResult> BoltsTask append(
+    final <TTaskResult, TContinuationResult> BaseTask append(
             Continuation<TTaskResult, TContinuationResult> continuation) {
         mCurTask = mCurTask.continueWith(continuation);
         return this;
