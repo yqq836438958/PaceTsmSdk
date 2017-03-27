@@ -1,17 +1,17 @@
 
-package com.pace.apdutransmit;
+package com.pace.processor.apdu;
 
+import com.event.TaskParam;
 import com.event.TaskResult;
-import com.pace.api.IApduChannel;
-import com.pace.events.ApduProcess;
+import com.pace.processor.ApduProcess;
 
 import java.util.List;
 
-public class CardListQuery extends ApduProcess {
+public class CardSwitch extends ApduProcess {
+    private String mCardAid = null;
 
-    CardListQuery(IApduChannel channel) {
-        super(channel);
-        // TODO Auto-generated constructor stub
+    CardSwitch(TaskParam param) {
+        super();
     }
 
     @Override

@@ -1,17 +1,17 @@
 
-package com.pace.apdutransmit;
+package com.pace.processor.apdu;
 
+import com.event.TaskParam;
 import com.event.TaskResult;
-import com.pace.api.IApduChannel;
-import com.pace.events.ApduProcess;
-import com.pace.tsm.TsmSdkParam;
+import com.pace.processor.ApduProcess;
 
 import java.util.List;
 
-public class CardQuery extends ApduProcess {
+// 发起者，或者是终结者？
+public class CardListQuery extends ApduProcess {
 
-    CardQuery(IApduChannel channel, TsmSdkParam param) {
-        super(channel);
+    CardListQuery(TaskParam param) {
+        super();
     }
 
     @Override

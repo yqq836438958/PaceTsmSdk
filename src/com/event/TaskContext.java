@@ -1,27 +1,24 @@
 
 package com.event;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 public class TaskContext {
-    private LinkedBlockingQueue<ITask> queue;
     private BaseTask baseTask;
+    private TaskParam param;
+    private int curPid = -1;
 
-    TaskContext() {
+    TaskContext(TaskParam param) {
+        this.param = param;
+    }
 
+    public TaskParam getParam() {
+        return param;
     }
 
     BaseTask getBaseTask() {
         return baseTask;
     }
 
-    LinkedBlockingQueue<ITask> getTaskList() {
-        return queue;
-    }
-
-    boolean addTask(ITask task) {
-        synchronized (TaskContext.this) {
-            return queue.add(task);
-        }
+    public int getCurPid() {
+        return curPid;
     }
 }

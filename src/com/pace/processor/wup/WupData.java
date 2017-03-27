@@ -1,5 +1,5 @@
 
-package com.pace.wup;
+package com.pace.processor.wup;
 
 public class WupData {
     public byte[] toBytes() {

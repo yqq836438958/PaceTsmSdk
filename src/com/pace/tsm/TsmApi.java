@@ -14,8 +14,7 @@ public class TsmApi {
     }
 
     public static String issueCard(String input) {
-        TsmSdkParam param = TsmSdkParam.wrap(input);
-        TsmLauncher.get().main(param);
+        TsmLauncher.get().main(input);
         return null;
     }
 

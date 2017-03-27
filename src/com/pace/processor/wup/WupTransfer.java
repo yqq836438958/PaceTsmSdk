@@ -1,7 +1,7 @@
 
-package com.pace.wup;
+package com.pace.processor.wup;
 
-import com.pace.events.WupProcess;
+import com.pace.processor.WupProcess;
 
 import java.util.List;
 

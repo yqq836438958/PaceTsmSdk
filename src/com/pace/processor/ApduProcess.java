@@ -1,9 +1,10 @@
 
-package com.pace.events;
+package com.pace.processor;
 
 import com.event.IBaseProcess;
 import com.event.TaskResult;
 import com.pace.api.IApduChannel;
+import com.pace.processor.apdu.ApduChannelFactory;
 
 import java.util.List;
 
@@ -16,8 +17,8 @@ public abstract class ApduProcess implements IBaseProcess {
     public static final int TASK_CARDCPLC = 5;
     private IApduChannel mChannel = null;
 
-    protected ApduProcess(IApduChannel channel) {
-        mChannel = channel;
+    protected ApduProcess() {
+        mChannel = ApduChannelFactory.get().getChannel();
     }
 
     @Override

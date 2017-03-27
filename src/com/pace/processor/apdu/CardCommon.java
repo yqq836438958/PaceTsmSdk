@@ -1,23 +1,21 @@
 
-package com.pace.apdutransmit;
+package com.pace.processor.apdu;
 
+import com.event.TaskParam;
 import com.event.TaskResult;
-import com.pace.api.IApduChannel;
-import com.pace.events.ApduProcess;
-import com.pace.tsm.TsmSdkParam;
+import com.pace.processor.ApduProcess;
 
 import java.util.List;
 
-public class CardTransmit extends ApduProcess {
-
-    CardTransmit(IApduChannel channel, TsmSdkParam param) {
-        super(channel);
-        // TODO Auto-generated constructor stub
+public class CardCommon extends ApduProcess {
+    public CardCommon(TaskParam param) {
+        super();
     }
 
     @Override
     protected List<String> onApduReq(TaskResult input) {
         // TODO Auto-generated method stub
+        // input.getOject()
         return null;
     }
 
@@ -29,7 +27,7 @@ public class CardTransmit extends ApduProcess {
 
     @Override
     protected TaskResult getCacheApdu(TaskResult input) {
-        // TODO Auto-generated method stub
+        // 透传，不需要缓存
         return null;
     }
 

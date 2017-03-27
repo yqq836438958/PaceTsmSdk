@@ -1,11 +1,11 @@
 
-package com.pace.apdutransmit;
+package com.pace.processor.apdu;
 
+import com.event.TaskParam;
 import com.event.TaskResult;
-import com.pace.api.IApduChannel;
 import com.pace.cache.TsmCache;
 import com.pace.constants.ApduConstants;
-import com.pace.events.ApduProcess;
+import com.pace.processor.ApduProcess;
 import com.pace.util.TextUtils;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
 public class CardCplc extends ApduProcess {
     private String mCplc = null;
 
-    CardCplc(IApduChannel channel) {
-        super(channel);
+    CardCplc(TaskParam param) {
+        super();
     }
 
     @Override

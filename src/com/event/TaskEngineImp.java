@@ -6,89 +6,105 @@ import com.event.ITask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TaskEngineImp {
+public class TaskEngineImp implements ITaskEngine {
     private AtomicBoolean mIsRunning = new AtomicBoolean(false);
+    private TaskParam mTaskParam = null;
+    private ProcessIdRouter mProcessIdRouter = null;
 
-    public TaskEngineImp() {
-
+    // 入口
+    public TaskEngineImp(TaskParam param) {
+        mTaskParam = param;
+        mProcessIdRouter = new ProcessIdRouter();
     }
 
     public void run() {
-        TaskContext context = new TaskContext();
-        LinkedBlockingQueue<ITask> taskQueue = context.getTaskList();
+        TaskContext context = new TaskContext(mTaskParam);
+        LinkedBlockingQueue<ITask> taskQueue = new LinkedBlockingQueue<ITask>();
         TaskHandler handler = new TaskHandler(context);
+        ITask tmpTask = null;
         while (mIsRunning.get()) {
             ITask task = null;
-            try {
-                task = taskQueue.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            task = taskQueue.poll(); // TODO if it should be blocked
             if (task == null) {
                 mIsRunning.set(false);
                 break;
             }
-            task.exec();
-            handler.handle();
+            TaskResult result = task.exec();
+            tmpTask = handler.handle(result.getResultHandler());
+            if (tmpTask != null) {
+                taskQueue.add(tmpTask);
+            }
         }
     }
 
     public interface IResultHandler {
-        public void onHandle(TaskContext context);
+        public ITask onHandle(TaskContext context, ProcessIdRouter processIdRouter);
     }
 
     public class TaskHandler {
-        IResultHandler mHandler = null;
         TaskContext mContext = null;
 
         public TaskHandler(TaskContext context) {
             mContext = context;
         }
 
-        public void set(IResultHandler handler) {
-            mHandler = handler;
-        }
-
-        public void handle() {
-            mHandler.onHandle(mContext);
+        public ITask handle(IResultHandler handler) {
+            return handler.onHandle(mContext, mProcessIdRouter);
         }
     }
 
-    public static class ChangeProcessHandler implements IResultHandler {
+    // 执行下一个Processor
+    public static class NextProcessHandler implements IResultHandler {
 
         @Override
-        public void onHandle(TaskContext context) {
-
+        public ITask onHandle(TaskContext context, ProcessIdRouter processIdRouter) {
+            int pid = processIdRouter.nextPid();
+            return new CommonTask(context, pid);
         }
     }
 
-    public class RepeatProcessHandler implements IResultHandler {
+    // 重复上次的Processor
+    public static class RepeatProcessHandler implements IResultHandler {
 
         @Override
-        public void onHandle(TaskContext context) {
-            ITask task = new CommonTask(context);
-            context.addTask(task);
+        public ITask onHandle(TaskContext context, ProcessIdRouter processIdRouter) {
+            int pid = processIdRouter.repeatPid();
+            return new CommonTask(context, pid);
         }
 
     }
 
-    public class DefaultTaskHandler implements IResultHandler {
+    // 由任务队列去决定是否需要终止Processor
+    public static class DefaultTaskHandler implements IResultHandler {
 
         @Override
-        public void onHandle(TaskContext context) {
+        public ITask onHandle(TaskContext context, ProcessIdRouter processIdRouter) {
+            int pid = processIdRouter.nextPid();
+            return new CommonTask(context, pid);
+        }
+
+    }
+
+    // 无条件终止Processor
+    public static class EndTaskHandler implements IResultHandler {
+
+        @Override
+        public ITask onHandle(TaskContext context, ProcessIdRouter processIdRouter) {
             // TODO Auto-generated method stub
-
+            return null;
         }
 
     }
 
-    public class FinishTaskHandler implements IResultHandler {
+    @Override
+    public TaskResult start() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        @Override
-        public void onHandle(TaskContext context) {
-            // TODO Auto-generated method stub
-
-        }
+    @Override
+    public void stop() {
+        // TODO Auto-generated method stub
 
     }
 

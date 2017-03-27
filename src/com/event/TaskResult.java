@@ -24,6 +24,10 @@ public class TaskResult {
         return object;
     }
 
+    public IResultHandler getResultHandler() {
+        return handler;
+    }
+
     public static TaskResult emptyResult() {
         return new TaskResult(TASK_INIT, null);
     }
