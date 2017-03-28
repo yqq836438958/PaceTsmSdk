@@ -8,9 +8,14 @@ import com.pace.api.IApduChannel;
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
     public static final int API_RUN_LOCAL = 1;
+    private static Context sContext = null;
+
+    public static Context getGlobalContext() {
+        return sContext;
+    }
 
     public static void regist(Context context, IApduChannel apduChannel) {
-
+        sContext = context;
     }
 
     public static String issueCard(String input) {

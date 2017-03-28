@@ -3,12 +3,12 @@ package com.pace.processor;
 
 import android.util.SparseArray;
 
-import com.event.IBaseProcess;
-import com.event.TaskParam;
+import com.event.IBaseProcessor;
+import com.event.TaskInput;
 import com.pace.processor.apdu.CardCplc;
 import com.pace.processor.apdu.CardListQuery;
+import com.pace.processor.apdu.CardNetBusiness;
 import com.pace.processor.apdu.CardSwitch;
-import com.pace.processor.apdu.CardCommon;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,22 +31,22 @@ public class ProcessorFactory {
         mProcessors.put(1, CardCplc.class);
         mProcessors.put(2, CardListQuery.class);
         mProcessors.put(3, CardSwitch.class);
-        mProcessors.put(4, CardCommon.class);
+        mProcessors.put(4, CardNetBusiness.class);
 
         // wup process add here
         // ...
     }
 
-    public IBaseProcess getProcess(int processId) {
-        IBaseProcess invoker = null;
+    public IBaseProcessor getProcess(int processId) {
+        IBaseProcessor invoker = null;
         Class<?> clz = mProcessors.get(processId);
         if (clz == null) {
             return invoker;
         }
 
         try {
-            Constructor<?> c = clz.getConstructor(TaskParam.class);
-            invoker = (IBaseProcess) c.newInstance(null);// TODO
+            Constructor<?> c = clz.getConstructor(TaskInput.class);
+            invoker = (IBaseProcessor) c.newInstance(null);// TODO
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -61,7 +61,7 @@ public class ProcessorFactory {
         return invoker;
     }
 
-    public IBaseProcess getProcess(TaskParam param) {
+    public IBaseProcessor getProcess(TaskInput param) {
         int processId = param.pid();
         return getProcess(processId);
     }

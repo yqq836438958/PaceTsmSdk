@@ -1,33 +1,34 @@
 
 package com.pace.processor.apdu;
 
-import com.event.TaskParam;
+import com.event.TaskInput;
 import com.event.TaskResult;
-import com.pace.processor.ApduProcess;
+import com.pace.processor.APDU;
+import com.pace.processor.ApduProcessor;
 
 import java.util.List;
 
 // 发起者，或者是终结者？
-public class CardListQuery extends ApduProcess {
+public class CardListQuery extends ApduProcessor {
 
-    CardListQuery(TaskParam param) {
+    CardListQuery(TaskInput param) {
         super();
     }
 
     @Override
-    protected List<String> onApduReq(TaskResult input) {
+    protected TaskResult prepare(TaskResult input) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected TaskResult onApduRsp(List<String> apdus) {
+    protected APDU provideAPDU(TaskResult input) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected TaskResult getCacheApdu(TaskResult input) {
+    protected TaskResult handleAPDU(List<String> apdus) {
         // TODO Auto-generated method stub
         return null;
     }

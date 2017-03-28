@@ -3,14 +3,19 @@ package com.event;
 
 public class TaskContext {
     private BaseTask baseTask;
-    private TaskParam param;
+    private TaskInput param;
+    private ProcessIdRouter router;
     private int curPid = -1;
 
-    TaskContext(TaskParam param) {
+    TaskContext(TaskInput param) {
         this.param = param;
     }
 
-    public TaskParam getParam() {
+    public ProcessIdRouter getRouter() {
+        return router;
+    }
+
+    public TaskInput getParam() {
         return param;
     }
 

@@ -2,8 +2,11 @@
 package com.event;
 
 public interface ITaskEngine {
+    public long input(TaskInput msg);
 
-    public TaskResult start();
+    public void create();
 
-    public void stop();
+    public void destroy();
+
+    public TaskOutPut getOutput(long reqId);
 }

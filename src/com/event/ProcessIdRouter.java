@@ -27,6 +27,10 @@ public class ProcessIdRouter {
         // TODO Auto-generated constructor stub
     }
 
+    final int firstPid() {
+        return 0;
+    }
+
     final int repeatPid() {
         return mCurStep;
     }

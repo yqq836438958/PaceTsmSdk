@@ -1,7 +1,6 @@
 
 package com.event;
 
-import com.event.IBaseProcess;
 import com.event.ITask;
 import com.pace.processor.ProcessorFactory;
 
@@ -24,7 +23,7 @@ public class CommonTask implements ITask {
         mPid = pid;
     }
 
-    private IBaseProcess findProcess() {
+    private IBaseProcessor findProcess() {
         return ProcessorFactory.get().getProcess(mPid);
     }
 
@@ -39,7 +38,7 @@ public class CommonTask implements ITask {
 
             @Override
             public TaskResult then(Task<TaskResult> task) throws Exception {
-                IBaseProcess process = findProcess();
+                IBaseProcessor process = findProcess();
                 if (process != null) {
                     return process.process(task.getResult());
                 }

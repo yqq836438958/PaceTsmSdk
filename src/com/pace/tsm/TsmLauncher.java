@@ -39,6 +39,6 @@ public class TsmLauncher {
     private void startEngine() {
         // TASK_APDU.setProcess(process);
         // TASK_WUP.setProcess(process);
-        mTaskEngine.start();
+        // mTaskEngine.start();
     }
 }

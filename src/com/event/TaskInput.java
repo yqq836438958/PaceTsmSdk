@@ -1,7 +1,7 @@
 
 package com.event;
 
-public class TaskParam {
+public class TaskInput {
     private String strMsg = "";
     private int iFinalPid = 0;
 
@@ -13,11 +13,11 @@ public class TaskParam {
         return strMsg;
     }
 
-    private TaskParam() {
+    private TaskInput() {
     }
 
-    public static TaskParam wrap(int pid, String msg) {
-        TaskParam param = new TaskParam();
+    public static TaskInput wrap(int pid, String msg) {
+        TaskInput param = new TaskInput();
         param.strMsg = msg;
         param.iFinalPid = pid;
         return param;

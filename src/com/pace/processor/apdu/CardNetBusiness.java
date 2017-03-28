@@ -5,26 +5,26 @@ import com.event.TaskInput;
 import com.event.TaskResult;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
+import com.pace.processor.provider.IApduProvider;
 
 import java.util.List;
 
-public class CardSwitch extends ApduProcessor {
-    private String mCardAid = null;
+public class CardNetBusiness extends ApduProcessor {
+    private IApduProvider mApduProvider = null;
 
-    CardSwitch(TaskInput param) {
+    public CardNetBusiness(TaskInput param) {
         super();
     }
 
     @Override
     protected TaskResult prepare(TaskResult input) {
-        // TODO Auto-generated method stub
+        // 是否需要进行操作
         return null;
     }
 
     @Override
     protected APDU provideAPDU(TaskResult input) {
-        // TODO Auto-generated method stub
-        return null;
+        return mApduProvider.provide(input);
     }
 
     @Override
