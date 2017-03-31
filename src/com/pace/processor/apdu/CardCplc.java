@@ -1,15 +1,14 @@
 
 package com.pace.processor.apdu;
 
-import com.event.TaskInput;
-import com.event.TaskResult;
 import com.pace.cache.TsmCache;
-import com.pace.constants.ApduConstants;
+import com.pace.event.TaskInput;
+import com.pace.event.TaskResult;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
+import com.pace.processor.provider.ApduProvider.CplcStrategy;
 import com.pace.util.TextUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CardCplc extends ApduProcessor {
@@ -30,9 +29,7 @@ public class CardCplc extends ApduProcessor {
 
     @Override
     protected APDU provideAPDU(TaskResult input) {
-        List<String> list = new ArrayList<String>();
-        list.add(ApduConstants.CPLC);
-        return new APDU(list);
+        return mApduProvider.call(new CplcStrategy(input));
     }
 
     @Override

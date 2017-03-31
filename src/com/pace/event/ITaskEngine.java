@@ -1,8 +1,10 @@
 
-package com.event;
+package com.pace.event;
 
 public interface ITaskEngine {
-    public long input(TaskInput msg);
+    public long addTask(TaskInput msg);
+
+    public void cancelTask(long reqId);
 
     public void create();
 

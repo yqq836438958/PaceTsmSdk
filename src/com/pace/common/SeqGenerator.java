@@ -1,5 +1,5 @@
 
-package com.common;
+package com.pace.common;
 
 import java.util.Random;
 

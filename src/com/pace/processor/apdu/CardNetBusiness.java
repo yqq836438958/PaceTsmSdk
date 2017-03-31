@@ -1,10 +1,11 @@
 
 package com.pace.processor.apdu;
 
-import com.event.TaskInput;
-import com.event.TaskResult;
+import com.pace.event.TaskInput;
+import com.pace.event.TaskResult;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
+import com.pace.processor.provider.ApduProvider.NetApduStrategy;
 import com.pace.processor.provider.IApduProvider;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CardNetBusiness extends ApduProcessor {
     private IApduProvider mApduProvider = null;
 
+    // 初始化的数据？？TODO
     public CardNetBusiness(TaskInput param) {
         super();
     }
@@ -24,7 +26,7 @@ public class CardNetBusiness extends ApduProcessor {
 
     @Override
     protected APDU provideAPDU(TaskResult input) {
-        return mApduProvider.provide(input);
+        return mApduProvider.call(new NetApduStrategy(input));
     }
 
     @Override

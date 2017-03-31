@@ -1,7 +1,5 @@
 
-package com.event;
-
-import com.event.ITask;
+package com.pace.event;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,11 +43,20 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
     }
 
     @Override
-    public long input(TaskInput param) {
+    public long addTask(TaskInput param) {
         long curTime = System.currentTimeMillis();
         mTaskInputQueue.add(param);
         mFutueMap.put(curTime, mExecutor.submit(this));
         return 0;
+    }
+
+    @Override
+    public void cancelTask(long reqId) {
+        Future<TaskResult> future = mFutueMap.get(reqId);
+        if (future == null) {
+            return;
+        }
+        future.cancel(true);
     }
 
     @Override

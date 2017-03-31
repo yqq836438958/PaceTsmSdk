@@ -1,8 +1,8 @@
 
 package com.pace.processor.apdu;
 
-import com.event.TaskInput;
-import com.event.TaskResult;
+import com.pace.event.TaskInput;
+import com.pace.event.TaskResult;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
 

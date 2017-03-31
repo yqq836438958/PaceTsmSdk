@@ -1,9 +1,9 @@
 
 package com.pace.httpserver;
 
-import com.common.SeqGenerator;
-import com.log.LogPrint;
+import com.pace.common.SeqGenerator;
 import com.pace.constants.CommonConstants;
+import com.pace.log.LogPrint;
 import com.pace.tsm.TsmApi;
 import com.qq.jce.wup.UniPacket;
 import com.qq.taf.jce.JceStruct;

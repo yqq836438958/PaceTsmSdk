@@ -1,5 +1,5 @@
 
-package com.log;
+package com.pace.log;
 
 public class LogPrint {
     public static void d(String tag, String msg) {

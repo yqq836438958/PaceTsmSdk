@@ -1,5 +1,5 @@
 
-package com.httpclientproxy;
+package com.pace.httpclientproxy;
 
 public class HttpClientExecutorFactory {
     private static HttpClientExecutorFactory sInstance;

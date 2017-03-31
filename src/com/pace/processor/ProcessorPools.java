@@ -3,38 +3,37 @@ package com.pace.processor;
 
 import android.util.SparseArray;
 
-import com.event.IBaseProcessor;
-import com.event.TaskInput;
+import com.pace.constants.CommonConstants;
+import com.pace.event.IBaseProcessor;
+import com.pace.event.TaskInput;
 import com.pace.processor.apdu.CardCplc;
 import com.pace.processor.apdu.CardListQuery;
 import com.pace.processor.apdu.CardNetBusiness;
+import com.pace.processor.apdu.CardQuery;
 import com.pace.processor.apdu.CardSwitch;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class ProcessorFactory {
-    private static ProcessorFactory sInstance = null;
+public class ProcessorPools {
+    private static ProcessorPools sInstance = null;
     private SparseArray<Class<?>> mProcessors = null;
 
-    public static ProcessorFactory get() {
+    public static ProcessorPools get() {
         if (sInstance == null) {
-            synchronized (ProcessorFactory.class) {
-                sInstance = new ProcessorFactory();
+            synchronized (ProcessorPools.class) {
+                sInstance = new ProcessorPools();
             }
         }
         return sInstance;
     }
 
-    private ProcessorFactory() {
-        // apdu process
-        mProcessors.put(1, CardCplc.class);
-        mProcessors.put(2, CardListQuery.class);
-        mProcessors.put(3, CardSwitch.class);
-        mProcessors.put(4, CardNetBusiness.class);
-
-        // wup process add here
-        // ...
+    private ProcessorPools() {
+        mProcessors.put(CommonConstants.TASK_CARD_CPLC, CardCplc.class);
+        mProcessors.put(CommonConstants.TASK_CARD_LIST, CardListQuery.class);
+        mProcessors.put(CommonConstants.TASK_CARD_SWITCH, CardSwitch.class);
+        mProcessors.put(CommonConstants.TASK_CARD_NET_BUSINESS, CardNetBusiness.class);
+        mProcessors.put(CommonConstants.TASK_CARD_QUERY, CardQuery.class);
     }
 
     public IBaseProcessor getProcess(int processId) {
@@ -43,7 +42,7 @@ public class ProcessorFactory {
         if (clz == null) {
             return invoker;
         }
-
+        // TODO 参数的传递
         try {
             Constructor<?> c = clz.getConstructor(TaskInput.class);
             invoker = (IBaseProcessor) c.newInstance(null);// TODO

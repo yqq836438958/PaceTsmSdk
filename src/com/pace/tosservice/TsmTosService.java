@@ -25,5 +25,10 @@ public abstract class TsmTosService extends BaseTosService {
         return null;
     }
 
-    public abstract APDU parseRspApdu(JceStruct rsp);
+    protected abstract APDU parseRspApdu(JceStruct rsp);
+
+    public final APDU requestApdu() {
+        JceStruct rsp = this.invokeSync();
+        return parseRspApdu(rsp);
+    }
 }

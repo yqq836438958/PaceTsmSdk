@@ -1,5 +1,5 @@
 
-package com.event;
+package com.pace.event;
 
 import bolts.Continuation;
 import bolts.Task;

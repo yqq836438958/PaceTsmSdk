@@ -1,5 +1,5 @@
 
-package com.event;
+package com.pace.event;
 
 public class TaskInput {
     private String strMsg = "";

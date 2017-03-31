@@ -1,7 +1,7 @@
 
-package com.event;
+package com.pace.event;
 
-import com.event.TaskEngineImp.IResultHandler;
+import com.pace.event.TaskEngineImp.IResultHandler;
 
 public class TaskResult {
     public static final int TASK_INIT = 0;
@@ -26,6 +26,10 @@ public class TaskResult {
 
     public IResultHandler getResultHandler() {
         return handler;
+    }
+
+    public boolean hasComplete() {
+        return iRet == TASK_FINISH;
     }
 
     public static TaskResult emptyResult() {

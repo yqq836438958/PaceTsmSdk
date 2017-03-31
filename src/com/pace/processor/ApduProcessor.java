@@ -1,10 +1,11 @@
 
 package com.pace.processor;
 
-import com.event.IBaseProcessor;
-import com.event.TaskResult;
+import com.pace.event.IBaseProcessor;
+import com.pace.event.TaskResult;
 import com.pace.api.IApduChannel;
-import com.pace.processor.apdu.ApduChannelFactory;
+import com.pace.processor.provider.ApduProvider;
+import com.pace.processor.provider.IApduProvider;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ public abstract class ApduProcessor implements IBaseProcessor {
     public static final int TASK_CARDLISTQUERY = 4;
     public static final int TASK_CARDCPLC = 5;
     private IApduChannel mChannel = null;
+    protected IApduProvider mApduProvider = null;
 
     protected ApduProcessor() {
         mChannel = ApduChannelFactory.get().getChannel();
+        mApduProvider = new ApduProvider();
     }
 
     @Override
@@ -30,9 +33,12 @@ public abstract class ApduProcessor implements IBaseProcessor {
         APDU apdu = provideAPDU(input);
         List<String> apdursp = null;
         if (mChannel != null) {
-            apdursp = mChannel.transmit(apdu.req());
+            apdursp = mChannel.transmit(apdu.getData());
         }
-        return handleAPDU(apdursp);
+        result = handleAPDU(apdursp);
+        if (result.hasComplete()) {
+        }
+        return result;
     }
 
     protected abstract TaskResult prepare(TaskResult input);
@@ -40,5 +46,7 @@ public abstract class ApduProcessor implements IBaseProcessor {
     protected abstract APDU provideAPDU(TaskResult input);
 
     protected abstract TaskResult handleAPDU(List<String> apdus);
+
+    // protected abstract void free();
 
 }

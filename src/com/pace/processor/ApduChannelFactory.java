@@ -1,5 +1,5 @@
 
-package com.pace.processor.apdu;
+package com.pace.processor;
 
 import com.pace.api.IApduChannel;
 

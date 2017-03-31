@@ -1,5 +1,5 @@
 
-package com.event;
+package com.pace.event;
 
 import java.util.ArrayList;
 import java.util.List;

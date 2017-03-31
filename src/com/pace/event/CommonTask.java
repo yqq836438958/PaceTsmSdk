@@ -1,8 +1,7 @@
 
-package com.event;
+package com.pace.event;
 
-import com.event.ITask;
-import com.pace.processor.ProcessorFactory;
+import com.pace.processor.ProcessorPools;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -24,7 +23,7 @@ public class CommonTask implements ITask {
     }
 
     private IBaseProcessor findProcess() {
-        return ProcessorFactory.get().getProcess(mPid);
+        return ProcessorPools.get().getProcess(mPid);
     }
 
     @Override
