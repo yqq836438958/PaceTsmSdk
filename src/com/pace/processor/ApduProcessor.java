@@ -11,11 +11,6 @@ import com.pace.processor.provider.IApduProvider;
 import java.util.List;
 
 public abstract class ApduProcessor implements IBaseProcessor {
-    public static final int TASK_CARDNETBUSINESS = 1;
-    public static final int TASK_CARDQUERY = 2;
-    public static final int TASK_CARDSWITCH = 3;
-    public static final int TASK_CARDLISTQUERY = 4;
-    public static final int TASK_CARDCPLC = 5;
     private IApduChannel mChannel = null;
     protected IApduProvider mApduProvider = null;
     protected TaskEventSource mEventSource = null;

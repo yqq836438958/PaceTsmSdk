@@ -1,11 +1,11 @@
 
 package com.pace.tsm;
 
-import com.pace.event.ITask;
 import com.pace.event.ITaskEngine;
+import com.pace.event.PidRouter;
 import com.pace.event.TaskEngineImp;
+import com.pace.event.TaskEventSource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TsmLauncher {
@@ -24,23 +24,15 @@ public class TsmLauncher {
 
     private TsmLauncher() {
         mTaskEngine = new TaskEngineImp();
-        init();
     }
 
-    private void init() {
-        List<ITask> list = new ArrayList<ITask>();
-        // list.add(TASK_APDU);
-        // list.add(TASK_WUP);
-        // mTaskEngine = new TaskEngine(list);
+    public long sendReq(String param, int pid, List<Integer> routeList) {
+        TaskEventSource inputSource = TaskEventSource.wrap(pid, param);
+        PidRouter router = PidRouter.newRouter(routeList);
+        return mTaskEngine.addTask(inputSource, router);
     }
 
-    public void main(String param) {
-        // startEngine(param);
-    }
-
-    private void startEngine() {
-        // TASK_APDU.setProcess(process);
-        // TASK_WUP.setProcess(process);
-        // mTaskEngine.start();
+    public String waitRsp(long lReqId) {
+        return null;
     }
 }

@@ -7,7 +7,11 @@ public class PidRouter {
     private List<Integer> mPidList;
     private int mIndex = 0;
 
-    public PidRouter(List<Integer> list) {
+    public static PidRouter newRouter(List<Integer> list) {
+        return new PidRouter(list);
+    }
+
+    private PidRouter(List<Integer> list) {
         mPidList = list;
     }
 

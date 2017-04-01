@@ -1,6 +1,7 @@
 
 package com.pace.processor;
 
+import com.pace.constants.CommonConstants;
 import com.pace.event.IBaseProcessor;
 import com.pace.event.TaskEventSource;
 import com.pace.processor.apdu.CardCplc;
@@ -34,19 +35,19 @@ public class ProcessorPools {
             return invoker;
         }
         switch (customPid) {
-            case ApduProcessor.TASK_CARDCPLC:
+            case CommonConstants.TASK_CARD_CPLC:
                 invoker = new CardCplc(param);
                 break;
-            case ApduProcessor.TASK_CARDLISTQUERY:
+            case CommonConstants.TASK_CARD_LIST:
                 invoker = new CardListQuery(param);
                 break;
-            case ApduProcessor.TASK_CARDQUERY:
+            case CommonConstants.TASK_CARD_QUERY:
                 invoker = new CardQuery(param);
                 break;
-            case ApduProcessor.TASK_CARDSWITCH:
+            case CommonConstants.TASK_CARD_SWITCH:
                 invoker = new CardSwitch(param);
                 break;
-            case ApduProcessor.TASK_CARDNETBUSINESS:
+            case CommonConstants.TASK_CARD_NET_BUSINESS:
                 invoker = new CardNetBusiness(param);
                 break;
             default:
