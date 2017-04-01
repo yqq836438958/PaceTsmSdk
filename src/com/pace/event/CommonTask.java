@@ -9,39 +9,46 @@ import bolts.Task;
 public class CommonTask implements ITask {
     private BaseTask mBaseTask = null;
     protected TaskContext mContext = null;
-    private int mPid = 0;
+    private int nextTaskPid = -1;
 
     public CommonTask(TaskContext context) {
-        mBaseTask = context.getBaseTask();
-        mContext = context;
+        this(context, -1);
     }
 
     public CommonTask(TaskContext context, int pid) {
         mBaseTask = context.getBaseTask();
         mContext = context;
-        mPid = pid;
+        nextTaskPid = pid;
     }
 
     private IBaseProcessor findProcess() {
-        return ProcessorPools.get().getProcess(mPid);
+        if (nextTaskPid > 0) {
+            return ProcessorPools.get().getProcess(mContext.getParam(), nextTaskPid);
+        }
+        return ProcessorPools.get().getProcess(mContext.getParam());
     }
 
     @Override
-    public TaskResult exec() {
+    public void clear() {
+        ProcessorPools.get().clear();
+    }
+
+    @Override
+    public TaskEvent exec() {
         handProcess();
-        return (TaskResult) mBaseTask.getResult();
+        return (TaskEvent) mBaseTask.getResult();
     }
 
     private void handProcess() {
-        Continuation<TaskResult, TaskResult> processContinuation = new Continuation<TaskResult, TaskResult>() {
+        Continuation<TaskEvent, TaskEvent> processContinuation = new Continuation<TaskEvent, TaskEvent>() {
 
             @Override
-            public TaskResult then(Task<TaskResult> task) throws Exception {
+            public TaskEvent then(Task<TaskEvent> task) throws Exception {
                 IBaseProcessor process = findProcess();
                 if (process != null) {
                     return process.process(task.getResult());
                 }
-                return TaskResult.emptyResult();
+                return TaskEvent.emptyResult();
             }
         };
         mBaseTask.append(processContinuation);

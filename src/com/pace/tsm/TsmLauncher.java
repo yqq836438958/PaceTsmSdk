@@ -3,6 +3,7 @@ package com.pace.tsm;
 
 import com.pace.event.ITask;
 import com.pace.event.ITaskEngine;
+import com.pace.event.TaskEngineImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class TsmLauncher {
     }
 
     private TsmLauncher() {
+        mTaskEngine = new TaskEngineImp();
         init();
     }
 

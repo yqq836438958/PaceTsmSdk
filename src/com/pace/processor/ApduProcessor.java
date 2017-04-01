@@ -2,7 +2,8 @@
 package com.pace.processor;
 
 import com.pace.event.IBaseProcessor;
-import com.pace.event.TaskResult;
+import com.pace.event.TaskEvent;
+import com.pace.event.TaskEventSource;
 import com.pace.api.IApduChannel;
 import com.pace.processor.provider.ApduProvider;
 import com.pace.processor.provider.IApduProvider;
@@ -10,23 +11,26 @@ import com.pace.processor.provider.IApduProvider;
 import java.util.List;
 
 public abstract class ApduProcessor implements IBaseProcessor {
-    public static final int TASK_ISSUECARD = 0;
-    public static final int TASK_CARDTOPUP = 1;
+    public static final int TASK_CARDNETBUSINESS = 1;
     public static final int TASK_CARDQUERY = 2;
     public static final int TASK_CARDSWITCH = 3;
     public static final int TASK_CARDLISTQUERY = 4;
     public static final int TASK_CARDCPLC = 5;
     private IApduChannel mChannel = null;
     protected IApduProvider mApduProvider = null;
+    protected TaskEventSource mEventSource = null;
+    private int mCurPid = 0;
 
-    protected ApduProcessor() {
+    protected ApduProcessor(TaskEventSource param, int pid) {
+        mEventSource = param;
         mChannel = ApduChannelFactory.get().getChannel();
         mApduProvider = new ApduProvider();
+        mCurPid = pid;
     }
 
     @Override
-    public TaskResult process(TaskResult input) {
-        TaskResult result = prepare(input);
+    public TaskEvent process(TaskEvent input) {
+        TaskEvent result = prepare(input);
         if (result != null) {
             return result;
         }
@@ -36,17 +40,23 @@ public abstract class ApduProcessor implements IBaseProcessor {
             apdursp = mChannel.transmit(apdu.getData());
         }
         result = handleAPDU(apdursp);
-        if (result.hasComplete()) {
-        }
         return result;
     }
 
-    protected abstract TaskResult prepare(TaskResult input);
+    protected abstract TaskEvent prepare(TaskEvent input);
 
-    protected abstract APDU provideAPDU(TaskResult input);
+    protected abstract APDU provideAPDU(TaskEvent input);
 
-    protected abstract TaskResult handleAPDU(List<String> apdus);
+    protected abstract TaskEvent handleAPDU(List<String> apdus);
 
-    // protected abstract void free();
+    public final int getCurPid() {
+        return mCurPid;
+    }
 
+    protected final TaskEvent retrieveTaskEvent(Object obj) {
+        if (mEventSource.targetId() == getCurPid()) {
+            return TaskEvent.end(obj);
+        }
+        return TaskEvent.next(obj);
+    }
 }

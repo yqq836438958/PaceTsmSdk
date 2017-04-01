@@ -3,19 +3,20 @@ package com.pace.event;
 
 public class TaskContext {
     private BaseTask baseTask;
-    private TaskInput param;
-    private ProcessIdRouter router;
+    private TaskEventSource param;
+    private PidRouter pidRouter;
     private int curPid = -1;
 
-    TaskContext(TaskInput param) {
+    TaskContext(TaskEventSource param, PidRouter router) {
         this.param = param;
+        pidRouter = router;
     }
 
-    public ProcessIdRouter getRouter() {
-        return router;
+    public PidRouter getPidRouter() {
+        return pidRouter;
     }
 
-    public TaskInput getParam() {
+    public TaskEventSource getParam() {
         return param;
     }
 

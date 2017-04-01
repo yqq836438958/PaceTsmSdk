@@ -2,8 +2,8 @@
 package com.pace.processor.apdu;
 
 import com.pace.cache.TsmCache;
-import com.pace.event.TaskInput;
-import com.pace.event.TaskResult;
+import com.pace.event.TaskEventSource;
+import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
 import com.pace.processor.provider.ApduProvider.CplcStrategy;
@@ -14,29 +14,29 @@ import java.util.List;
 public class CardCplc extends ApduProcessor {
     private String mCplc = null;
 
-    CardCplc(TaskInput param) {
-        super();
+    public CardCplc(TaskEventSource param) {
+        super(param, TASK_CARDCPLC);
     }
 
     @Override
-    protected TaskResult prepare(TaskResult input) {
+    protected TaskEvent prepare(TaskEvent input) {
         String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.getCplc() : mCplc;
         if (TextUtils.isEmpty(cacheCplc)) {
             return null;
         }
-        return TaskResult.newResult(TaskResult.TASK_FINISH, cacheCplc);
+        return retrieveTaskEvent(cacheCplc);
     }
 
     @Override
-    protected APDU provideAPDU(TaskResult input) {
+    protected APDU provideAPDU(TaskEvent input) {
         return mApduProvider.call(new CplcStrategy(input));
     }
 
     @Override
-    protected TaskResult handleAPDU(List<String> apdus) {
+    protected TaskEvent handleAPDU(List<String> apdus) {
         mCplc = apdus.get(0);
         TsmCache.saveCplc(mCplc);
-        return TaskResult.newResult(TaskResult.TASK_FINISH, mCplc);
+        return retrieveTaskEvent(mCplc);
     }
 
 }

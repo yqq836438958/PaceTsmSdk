@@ -1,8 +1,8 @@
 
 package com.pace.processor.apdu;
 
-import com.pace.event.TaskInput;
-import com.pace.event.TaskResult;
+import com.pace.event.TaskEventSource;
+import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
 
@@ -11,24 +11,24 @@ import java.util.List;
 public class CardSwitch extends ApduProcessor {
     private String mCardAid = null;
 
-    CardSwitch(TaskInput param) {
-        super();
+    public CardSwitch(TaskEventSource param) {
+        super(param, TASK_CARDSWITCH);
     }
 
     @Override
-    protected TaskResult prepare(TaskResult input) {
+    protected TaskEvent prepare(TaskEvent input) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected APDU provideAPDU(TaskResult input) {
+    protected APDU provideAPDU(TaskEvent input) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected TaskResult handleAPDU(List<String> apdus) {
+    protected TaskEvent handleAPDU(List<String> apdus) {
         // TODO Auto-generated method stub
         return null;
     }

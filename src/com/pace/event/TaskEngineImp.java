@@ -10,15 +10,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
+public class TaskEngineImp implements ITaskEngine, Callable<TaskEvent> {
     // TODO 需改造成一个自动运行的引擎，可以随时接收参数
     private static ITaskEngine sInstance = null;
     private AtomicBoolean mIsRunning = new AtomicBoolean(false);
-    // 每添加一个TaskInput，意味着，又增加了一个业务需求
-    private LinkedBlockingQueue<TaskInput> mTaskInputQueue = new LinkedBlockingQueue<TaskInput>();
-
+    // 每添加一个TaskEventSource，意味着，又增加了一个业务需求
+    private LinkedBlockingQueue<TaskEventSource> mTaskEventSourceQueue = new LinkedBlockingQueue<TaskEventSource>();
+    private LinkedBlockingQueue<PidRouter> mPidRouterQueue = new LinkedBlockingQueue<PidRouter>();
     private ExecutorService mExecutor = Executors.newCachedThreadPool();
-    private ConcurrentHashMap<Long, Future<TaskResult>> mFutueMap = new ConcurrentHashMap<Long, Future<TaskResult>>();
+    private ConcurrentHashMap<Long, Future<TaskEvent>> mFutueMap = new ConcurrentHashMap<Long, Future<TaskEvent>>();
     private static Object slockObj = new Object();
 
     public static ITaskEngine get() {
@@ -39,20 +39,21 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
     @Override
     public void destroy() {
         mIsRunning.set(false);
-        mTaskInputQueue.clear();
+        mTaskEventSourceQueue.clear();
     }
 
     @Override
-    public long addTask(TaskInput param) {
+    public long addTask(TaskEventSource param, PidRouter router) {
         long curTime = System.currentTimeMillis();
-        mTaskInputQueue.add(param);
+        mTaskEventSourceQueue.add(param);
+        mPidRouterQueue.add(router);
         mFutueMap.put(curTime, mExecutor.submit(this));
         return 0;
     }
 
     @Override
     public void cancelTask(long reqId) {
-        Future<TaskResult> future = mFutueMap.get(reqId);
+        Future<TaskEvent> future = mFutueMap.get(reqId);
         if (future == null) {
             return;
         }
@@ -61,8 +62,8 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
 
     @Override
     public TaskOutPut getOutput(long reqId) {
-        Future<TaskResult> future = mFutueMap.get(reqId);
-        TaskResult result = null;
+        Future<TaskEvent> future = mFutueMap.get(reqId);
+        TaskEvent result = null;
         try {
             result = future.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -73,11 +74,12 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
     }
 
     @Override
-    public TaskResult call() throws Exception {
+    public TaskEvent call() throws Exception {
         synchronized (slockObj) {
-            TaskResult result = null;
-            TaskInput input = mTaskInputQueue.take();// TODO
-            TaskContext context = new TaskContext(input);
+            TaskEvent result = null;
+            TaskEventSource input = mTaskEventSourceQueue.take();// TODO
+            PidRouter router = mPidRouterQueue.take();
+            TaskContext context = new TaskContext(input, router);
             TaskHandler handler = new TaskHandler(context);
             LinkedBlockingQueue<ITask> taskQueue = initTaskQueue(context);
 
@@ -85,7 +87,7 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
             while (tmpTask != null) {
                 // TODO if it should be blocked
                 result = tmpTask.exec();
-                tmpTask = handler.handle(result.getResultHandler());
+                tmpTask = handler.call(result.getResultHandler(), tmpTask);
                 if (tmpTask != null) {
                     taskQueue.add(tmpTask);
                 }
@@ -98,65 +100,65 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskResult> {
     private LinkedBlockingQueue<ITask> initTaskQueue(TaskContext context) {
         LinkedBlockingQueue<ITask> taskQueue = new LinkedBlockingQueue<ITask>();
         // TODO 添加初始task
-        ITask firstTask = new CommonTask(context, context.getRouter().firstPid());
+        ITask firstTask = new CommonTask(context, context.getPidRouter().first());
         taskQueue.add(firstTask);
         return taskQueue;
     }
 
-    public interface IResultHandler {
-        public ITask onHandle(TaskContext context);
+    public interface IEventHandler {
+        public ITask onHandle(TaskContext context, ITask lastTask);
     }
 
-    public class TaskHandler {
+    class TaskHandler {
         TaskContext mContext = null;
 
         public TaskHandler(TaskContext context) {
             mContext = context;
         }
 
-        public ITask handle(IResultHandler handler) {
-            return handler.onHandle(mContext);
+        public ITask call(IEventHandler handler, ITask lastTask) {
+            return handler.onHandle(mContext, lastTask);
         }
     }
 
     // 执行下一个Processor
-    public static class NextProcessHandler implements IResultHandler {
+    public static class NextProcessHandler implements IEventHandler {
 
         @Override
-        public ITask onHandle(TaskContext context) {
-            int pid = context.getRouter().nextPid();
+        public ITask onHandle(TaskContext context, ITask lastTask) {
+            int pid = context.getPidRouter().next();
             return new CommonTask(context, pid);
         }
     }
 
     // 重复上次的Processor
-    public static class RepeatProcessHandler implements IResultHandler {
+    public static class RepeatProcessHandler implements IEventHandler {
 
         @Override
-        public ITask onHandle(TaskContext context) {
-            int pid = context.getRouter().repeatPid();
+        public ITask onHandle(TaskContext context, ITask lastTask) {
+            int pid = context.getPidRouter().repeat();
             return new CommonTask(context, pid);
         }
 
     }
 
     // 由任务队列去决定是否需要终止Processor
-    public static class DefaultTaskHandler implements IResultHandler {
+    public static class DefaultProcessHandler implements IEventHandler {
 
         @Override
-        public ITask onHandle(TaskContext context) {
-            int pid = context.getRouter().nextPid();
+        public ITask onHandle(TaskContext context, ITask lastTask) {
+            int pid = context.getPidRouter().next();
             return new CommonTask(context, pid);
         }
 
     }
 
     // 无条件终止Processor
-    public static class EndTaskHandler implements IResultHandler {
+    public static class EndProcessHandler implements IEventHandler {
 
         @Override
-        public ITask onHandle(TaskContext context) {
-            // TODO Auto-generated method stub
+        public ITask onHandle(TaskContext context, ITask lastTask) {
+            lastTask.clear();
             return null;
         }
 

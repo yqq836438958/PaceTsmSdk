@@ -1,7 +1,7 @@
 
 package com.pace.processor.provider;
 
-import com.pace.event.TaskResult;
+import com.pace.event.TaskEvent;
 import com.pace.log.LogPrint;
 import com.pace.constants.ApduConstants;
 import com.pace.processor.APDU;
@@ -18,16 +18,16 @@ public class ApduProvider implements IApduProvider {
     }
 
     public static abstract class ApduProviderStrategy implements IApduProviderStrategy {
-        protected TaskResult mInput = null;
+        protected TaskEvent mInput = null;
 
-        public ApduProviderStrategy(TaskResult input) {
+        public ApduProviderStrategy(TaskEvent input) {
             mInput = input;
         }
     }
 
     public static class CplcStrategy extends ApduProviderStrategy {
 
-        public CplcStrategy(TaskResult input) {
+        public CplcStrategy(TaskEvent input) {
             super(input);
         }
 
@@ -42,7 +42,7 @@ public class ApduProvider implements IApduProvider {
 
     public static class CardTagQueryStrategy extends ApduProviderStrategy {
 
-        public CardTagQueryStrategy(TaskResult input) {
+        public CardTagQueryStrategy(TaskEvent input) {
             super(input);
         }
 
@@ -55,7 +55,7 @@ public class ApduProvider implements IApduProvider {
 
     public static class NetApduStrategy extends ApduProviderStrategy {
 
-        public NetApduStrategy(TaskResult input) {
+        public NetApduStrategy(TaskEvent input) {
             super(input);
         }
 

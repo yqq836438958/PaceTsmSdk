@@ -8,15 +8,15 @@ public class BaseTask {
     private Task mCurTask = null;
 
     private BaseTask() {
-        mCurTask = Task.forResult(TaskResult.emptyResult());
+        mCurTask = Task.forResult(TaskEvent.emptyResult());
     }
 
     static BaseTask create() {
         return new BaseTask();
     }
 
-    final <TTaskResult, TContinuationResult> BaseTask append(
-            Continuation<TTaskResult, TContinuationResult> continuation) {
+    final <TTaskEvent, TContinuationResult> BaseTask append(
+            Continuation<TTaskEvent, TContinuationResult> continuation) {
         mCurTask = mCurTask.continueWith(continuation);
         return this;
     }

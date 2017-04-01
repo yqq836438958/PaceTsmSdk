@@ -2,7 +2,7 @@
 package com.pace.event;
 
 public interface ITaskEngine {
-    public long addTask(TaskInput msg);
+    public long addTask(TaskEventSource msg, PidRouter router);
 
     public void cancelTask(long reqId);
 
