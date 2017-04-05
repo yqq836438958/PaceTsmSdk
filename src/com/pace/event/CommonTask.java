@@ -48,7 +48,7 @@ public class CommonTask implements ITask {
                 if (process != null) {
                     return process.process(task.getResult());
                 }
-                return TaskEvent.emptyResult();
+                return TaskEvent.error();
             }
         };
         mBaseTask.append(processContinuation);

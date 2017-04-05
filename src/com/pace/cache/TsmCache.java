@@ -10,6 +10,14 @@ public class TsmCache {
         return null;
     }
 
+    public static String getCardList() {
+        return null;
+    }
+
+    public void saveCardList(String list) {
+
+    }
+
     public static void saveLastExeRet(String msg) {
 
     }

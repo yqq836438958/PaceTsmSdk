@@ -8,7 +8,7 @@ public class BaseTask {
     private Task mCurTask = null;
 
     private BaseTask() {
-        mCurTask = Task.forResult(TaskEvent.emptyResult());
+        mCurTask = Task.forResult(TaskEvent.empty());
     }
 
     static BaseTask create() {

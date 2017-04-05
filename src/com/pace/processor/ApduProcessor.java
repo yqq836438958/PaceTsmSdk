@@ -5,8 +5,7 @@ import com.pace.event.IBaseProcessor;
 import com.pace.event.TaskEvent;
 import com.pace.event.TaskEventSource;
 import com.pace.api.IApduChannel;
-import com.pace.processor.provider.ApduProvider;
-import com.pace.processor.provider.IApduProvider;
+import com.pace.processor.IApduProvider.IApduProviderStrategy;
 
 import java.util.List;
 
@@ -30,6 +29,9 @@ public abstract class ApduProcessor implements IBaseProcessor {
             return result;
         }
         APDU apdu = provideAPDU(input);
+        if (apdu == null) {
+            return TaskEvent.error();
+        }
         List<String> apdursp = null;
         if (mChannel != null) {
             apdursp = mChannel.transmit(apdu.getData());
@@ -49,9 +51,21 @@ public abstract class ApduProcessor implements IBaseProcessor {
     }
 
     protected final TaskEvent retrieveTaskEvent(Object obj) {
-        if (mEventSource.targetId() == getCurPid()) {
+        if (obj == null || mEventSource.targetId() == getCurPid()) {
             return TaskEvent.end(obj);
         }
         return TaskEvent.next(obj);
+    }
+
+    protected final TaskEvent repeatTaskEvent(Object object) {
+        return TaskEvent.repeat(object);
+    }
+
+    public class ApduProvider implements IApduProvider {
+
+        @Override
+        public APDU call(IApduProviderStrategy strategy) {
+            return strategy.provide();
+        }
     }
 }

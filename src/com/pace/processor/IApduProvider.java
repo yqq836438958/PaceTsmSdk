@@ -1,5 +1,5 @@
 
-package com.pace.processor.provider;
+package com.pace.processor;
 
 import com.pace.processor.APDU;
 

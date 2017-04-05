@@ -1,6 +1,7 @@
 
 package com.pace.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class APDU {
@@ -13,6 +14,11 @@ public class APDU {
 
     public APDU(List<String> list) {
         data = list;
+    }
+
+    public APDU(String apdu) {
+        data = new ArrayList<String>();
+        data.add(apdu);
     }
 
     public int getSeqId() {

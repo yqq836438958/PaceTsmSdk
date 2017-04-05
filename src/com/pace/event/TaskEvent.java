@@ -28,8 +28,12 @@ public class TaskEvent {
         return handler;
     }
 
-    public static TaskEvent emptyResult() {
+    public static TaskEvent empty() {
         return new TaskEvent(null);
+    }
+
+    public static TaskEvent error() {
+        return new TaskEvent(null, new EndProcessHandler());
     }
 
     public static TaskEvent repeat(Object object) {

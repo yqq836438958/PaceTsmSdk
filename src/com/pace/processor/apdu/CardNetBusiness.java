@@ -2,20 +2,22 @@
 package com.pace.processor.apdu;
 
 import com.pace.event.TaskEventSource;
+import com.pace.log.LogPrint;
+import com.pace.constants.CommonConstants;
 import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
 import com.pace.processor.ApduProcessor;
-import com.pace.processor.provider.ApduProvider.NetApduStrategy;
-import com.pace.processor.provider.IApduProvider;
+import com.pace.processor.IApduProvider.IApduProviderStrategy;
+import com.pace.tosservice.GetTsmApdu;
+import com.pace.tosservice.TsmTosService;
 
 import java.util.List;
 
 public class CardNetBusiness extends ApduProcessor {
-    private IApduProvider mApduProvider = null;
 
     // 初始化的数据？？TODO
     public CardNetBusiness(TaskEventSource param) {
-        super(param,TASK_CARDNETBUSINESS);
+        super(param, CommonConstants.TASK_CARD_NET_BUSINESS);
     }
 
     @Override
@@ -35,4 +37,20 @@ public class CardNetBusiness extends ApduProcessor {
         return null;
     }
 
+    public static class NetApduStrategy implements IApduProviderStrategy {
+        private TaskEvent mInput = null;
+
+        public NetApduStrategy(TaskEvent input) {
+            mInput = input;
+        }
+
+        @Override
+        public APDU provide() {
+
+            // TODO 解析出来
+            TsmTosService getApdu = new GetTsmApdu();
+            return getApdu.requestApdu();
+        }
+
+    }
 }
