@@ -20,4 +20,13 @@ public class PluginManager {
         return mService;
     }
 
+    private boolean checkDexMd5() {
+        // TODO
+        return false;
+    }
+
+    private boolean checkDexExsit() {
+        // TODO
+        return false;
+    }
 }
