@@ -1,6 +1,8 @@
 
 package com.pace.common;
 
+import android.text.TextUtils;
+
 import com.pace.constants.ApduConstants;
 
 import java.util.List;
@@ -29,5 +31,17 @@ public class ApduHelper {
     public static boolean isResponseSuc(List<String> rsp) {
         // TODO
         return false;
+    }
+
+    public static int isAppActived(String apdu, String aid) {
+        if (TextUtils.isEmpty(apdu) || TextUtils.isEmpty(aid)) {
+            return -1;
+        }
+        byte[] bsApdu = ByteUtil.toByteArray(apdu);
+        int aidIndex = apdu.lastIndexOf(aid);
+        aidIndex += aid.length() - 1 + 10;
+        int offset = aidIndex / 2;
+        byte result = bsApdu[offset];
+        return (int) result;
     }
 }

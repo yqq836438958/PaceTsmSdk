@@ -2,7 +2,6 @@
 package com.pace.processor.apdu;
 
 import com.pace.event.TaskEventSource;
-import com.pace.log.LogPrint;
 import com.pace.cache.TsmCache;
 import com.pace.common.ApduHelper;
 import com.pace.constants.CommonConstants;

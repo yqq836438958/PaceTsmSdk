@@ -9,6 +9,7 @@ import com.pace.processor.apdu.CardListQuery;
 import com.pace.processor.apdu.CardNetBusiness;
 import com.pace.processor.apdu.CardQuery;
 import com.pace.processor.apdu.CardSwitch;
+import com.pace.processor.channel.ApduChannel;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -64,5 +65,7 @@ public class ProcessorPools {
     public void clear() {
         // 清除已开辟的processors
         mProcessorMap.clear();
+        //  清理apduchannel
+        ApduChannel.get().close();
     }
 }
