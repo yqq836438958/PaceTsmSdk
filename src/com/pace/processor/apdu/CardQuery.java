@@ -54,7 +54,7 @@ public class CardQuery extends ApduProcessor {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return repeatTaskEvent(null);
+        return repeatTaskEvent(mOutPut.toString());
     }
 
     public static class CardTagQueryStrategy implements IApduProviderStrategy {

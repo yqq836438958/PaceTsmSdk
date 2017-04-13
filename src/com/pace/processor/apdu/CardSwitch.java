@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class CardSwitch extends ApduProcessor {
     private ConcurrentLinkedDeque<SwitchCardElement> mAidQueue = null;
 
+    // 需要依赖cardlistquery的结果
     public CardSwitch(TaskEventSource param) {
         super(param, CommonConstants.TASK_CARD_SWITCH);
         // 按照 activite status排序 ,生成mAidQueue

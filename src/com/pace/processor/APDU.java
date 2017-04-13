@@ -10,7 +10,6 @@ public class APDU {
     private int index;
     private int checkPoint;
     private String sSession = "";// TODO
-    private boolean bFinish = false;
 
     public APDU(List<String> list) {
         data = list;
@@ -33,8 +32,8 @@ public class APDU {
         return data;
     }
 
-    public boolean hasFinish() {
-        return bFinish;
+    public boolean isEmpty() {
+        return (data == null) || data.size() <= 0;
     }
 
     @Override
