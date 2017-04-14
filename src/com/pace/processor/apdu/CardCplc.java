@@ -22,7 +22,7 @@ public class CardCplc extends ApduProcessor {
     }
 
     @Override
-    protected TaskEvent prepare(TaskEvent input) {
+    protected TaskEvent onPrepare(TaskEvent input) {
         String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.getCplc() : mCplc;
         if (TextUtils.isEmpty(cacheCplc)) {
             return null;
@@ -32,12 +32,12 @@ public class CardCplc extends ApduProcessor {
     }
 
     @Override
-    protected APDU provideAPDU(TaskEvent input) {
+    protected APDU onProvide(TaskEvent input) {
         return mApduProvider.call(new CplcStrategy());
     }
 
     @Override
-    protected TaskEvent handleAPDU(List<String> apdus) {
+    protected TaskEvent onPost(List<String> apdus) {
         mCplc = apdus.get(0);
         TsmCache.saveCplc(mCplc);
         return retrieveTaskEvent(mCplc);

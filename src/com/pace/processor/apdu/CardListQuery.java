@@ -30,7 +30,7 @@ public class CardListQuery extends ApduProcessor {
     }
 
     @Override
-    protected TaskEvent prepare(TaskEvent input) {
+    protected TaskEvent onPrepare(TaskEvent input) {
         String list = TsmCache.getCardList();
         if (!TextUtils.isEmpty(list)) {
             return retrieveTaskEvent(list);
@@ -39,12 +39,12 @@ public class CardListQuery extends ApduProcessor {
     }
 
     @Override
-    protected APDU provideAPDU(TaskEvent input) {
+    protected APDU onProvide(TaskEvent input) {
         return mApduProvider.call(new ListStrategy(input, ""));// TODO
     }
 
     @Override
-    protected TaskEvent handleAPDU(List<String> apdus) {
+    protected TaskEvent onPost(List<String> apdus) {
         // TODO Auto-generated method stub
         // TODO
         // 处理apdu rsp

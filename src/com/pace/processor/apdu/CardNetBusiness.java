@@ -2,7 +2,6 @@
 package com.pace.processor.apdu;
 
 import com.pace.event.TaskEventSource;
-import com.pace.log.LogPrint;
 import com.pace.constants.CommonConstants;
 import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
@@ -21,25 +20,27 @@ public class CardNetBusiness extends ApduProcessor {
     }
 
     @Override
-    protected TaskEvent prepare(TaskEvent input) {
-        // 是否需要进行操作
+    protected TaskEvent onPrepare(TaskEvent input) {
+        // TODO 做一些初始化的工作
         return null;
     }
 
     @Override
-    protected APDU provideAPDU(TaskEvent input) {
+    protected APDU onProvide(TaskEvent input) {
         return mApduProvider.call(new NetApduStrategy(input));
     }
 
     @Override
-    protected TaskEvent handleAPDU(List<String> apdus) {
+    protected TaskEvent onPost(List<String> apdus) {
         // TODO Auto-generated method stub
-        return null;
+        APDU rsp = new APDU(apdus);
+        return TaskEvent.repeat(rsp);
     }
 
     public static class NetApduStrategy implements IApduProviderStrategy {
         private TaskEvent mInput = null;
 
+        // 请求参数
         public NetApduStrategy(TaskEvent input) {
             mInput = input;
         }

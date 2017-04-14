@@ -21,24 +21,24 @@ public abstract class ApduProcessor implements IBaseProcessor {
 
     @Override
     public TaskEvent process(TaskEvent input) {
-        TaskEvent result = prepare(input);
+        TaskEvent result = onPrepare(input);
         if (result != null) {
             return result;
         }
-        APDU apdu = provideAPDU(input);
-        if (apdu == null) {
+        APDU apdu = onProvide(input);
+        if (apdu == null || apdu.isEmpty()) {
             return TaskEvent.error();
         }
         List<String> apdursp = ApduChannel.get().transmit(apdu.getData());
-        result = handleAPDU(apdursp);
+        result = onPost(apdursp);
         return result;
     }
 
-    protected abstract TaskEvent prepare(TaskEvent input);
+    protected abstract TaskEvent onPrepare(TaskEvent input);
 
-    protected abstract APDU provideAPDU(TaskEvent input);
+    protected abstract APDU onProvide(TaskEvent input);
 
-    protected abstract TaskEvent handleAPDU(List<String> apdus);
+    protected abstract TaskEvent onPost(List<String> apdus);
 
     public final int getCurPid() {
         return mCurPid;

@@ -28,18 +28,18 @@ public class CardQuery extends ApduProcessor {
     }
 
     @Override
-    protected TaskEvent prepare(TaskEvent input) {
+    protected TaskEvent onPrepare(TaskEvent input) {
         return null;
     }
 
     @Override
-    protected APDU provideAPDU(TaskEvent input) {
+    protected APDU onProvide(TaskEvent input) {
         CardTagElement element = mCardTagElements.peek();
         return mApduProvider.call(new CardTagQueryStrategy(element));
     }
 
     @Override
-    protected TaskEvent handleAPDU(List<String> apdus) {
+    protected TaskEvent onPost(List<String> apdus) {
         CardTagElement element = mCardTagElements.poll();
         if (element == null) {
             return retrieveTaskEvent(mOutPut.toString());
