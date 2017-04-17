@@ -1,5 +1,5 @@
 
-package com.pace.processor.apdu;
+package com.pace.processor.internal;
 
 import com.pace.event.TaskEventSource;
 
@@ -9,7 +9,6 @@ import com.pace.common.ApduHelper;
 import com.pace.constants.CommonConstants;
 import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
-import com.pace.processor.ApduProcessor;
 import com.pace.processor.IApduProvider.IApduProviderStrategy;
 
 import org.json.JSONArray;
@@ -18,7 +17,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class CardSwitch extends ApduProcessor {
+public class CardSwitch extends CardBaseBusiness {
     private ConcurrentLinkedQueue<SwitchCardElement> mAidQueue = null;
     private JSONArray mOriginArray = new JSONArray();
     private JSONArray mTargetArray = new JSONArray();
@@ -84,5 +83,30 @@ public class CardSwitch extends ApduProcessor {
     class SwitchCardElement {
         String instance_id;
         boolean needAct;
+    }
+
+    @Override
+    protected ApduResult<Boolean> onCachPrepare() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduProvide(Object input) {
+        SwitchCardElement element = mAidQueue.peek();
+        APDU apdu = mApduProvider.call(new CardSwitchStrategy(element));
+        return new ApduResult<APDU>(step, obj);
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String finalResult() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

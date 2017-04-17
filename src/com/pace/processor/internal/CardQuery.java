@@ -1,13 +1,11 @@
 
-package com.pace.processor.apdu;
+package com.pace.processor.internal;
 
 import com.pace.event.TaskEventSource;
 import com.pace.plugin.ICardPluginService;
 import com.pace.plugin.PluginManager;
 import com.pace.constants.CommonConstants;
-import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
-import com.pace.processor.ApduProcessor;
 import com.pace.processor.IApduProvider.IApduProviderStrategy;
 
 import org.json.JSONException;
@@ -17,12 +15,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class CardQuery extends ApduProcessor {
+public class CardQuery extends CardBaseBusiness {
     private ConcurrentLinkedQueue<CardTagElement> mCardTagElements = null;
     private JSONObject mOutPut = null;
 
-    public CardQuery(TaskEventSource param) {
-        super(param, CommonConstants.TASK_CARD_QUERY);
+    public CardQuery() {
         // TODO
         mOutPut = new JSONObject();
     }
@@ -80,5 +77,38 @@ public class CardQuery extends ApduProcessor {
         private static final long serialVersionUID = 1L;
         private String aid;
         private String tag;
+    }
+
+    @Override
+    protected ApduResult<Boolean> onCachPrepare() {
+        return new ApduResult<Boolean>(APDU_STEP.APDU_PROVIDE, Boolean.FALSE);
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduProvide(Object input) {
+        CardTagElement element = mCardTagElements.peek();
+        APDU apdu = mApduProvider.call(new CardTagQueryStrategy(element));
+        return new ApduResult<APDU>(APDU_STEP.APDU_TRANSIMT, apdu);
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+        CardTagElement element = mCardTagElements.poll();
+        if (element == null) {
+            return retrieveTaskEvent(mOutPut.toString());
+        }
+        ICardPluginService service = PluginManager.getInstance().getService();
+        String parseData = service.parseDetailRsp(element.aid, element.tag, apdus);
+        try {
+            mOutPut.put(element.tag, parseData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected String finalResult() {
+        return mOutPut.toString();
     }
 }

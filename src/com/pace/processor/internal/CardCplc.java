@@ -1,46 +1,48 @@
 
-package com.pace.processor.apdu;
+package com.pace.processor.internal;
 
 import com.pace.cache.TsmCache;
 import com.pace.constants.ApduConstants;
-import com.pace.constants.CommonConstants;
-import com.pace.event.TaskEventSource;
-import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
-import com.pace.processor.ApduProcessor;
 import com.pace.processor.IApduProvider.IApduProviderStrategy;
 import com.pace.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardCplc extends ApduProcessor {
+public class CardCplc extends CardBaseBusiness {
     private String mCplc = null;
 
-    public CardCplc(TaskEventSource param) {
-        super(param, CommonConstants.TASK_CARD_CPLC);
+    public CardCplc() {
     }
 
     @Override
-    protected TaskEvent onPrepare(TaskEvent input) {
+    protected ApduResult<Boolean> onCachPrepare() {
         String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.getCplc() : mCplc;
         if (TextUtils.isEmpty(cacheCplc)) {
-            return null;
+            return new ApduResult<Boolean>(APDU_STEP.APDU_PROVIDE, Boolean.FALSE);
         }
         mCplc = cacheCplc;
-        return retrieveTaskEvent(cacheCplc);
+        return nextFinal(mCplc);
+        // return new ApduResult<Boolean>(APDU_STEP.FINAL, Boolean.TRUE);
     }
 
     @Override
-    protected APDU onProvide(TaskEvent input) {
-        return mApduProvider.call(new CplcStrategy());
+    protected ApduResult<APDU> onApduProvide(Object input) {
+        APDU apdu = mApduProvider.call(new CplcStrategy());
+        return new ApduResult<APDU>(APDU_STEP.APDU_TRANSIMT, apdu);
     }
 
     @Override
-    protected TaskEvent onPost(List<String> apdus) {
+    protected ApduResult<APDU> onApduConsume(List<String> apdus) {
         mCplc = apdus.get(0);
         TsmCache.saveCplc(mCplc);
-        return retrieveTaskEvent(mCplc);
+        return new ApduResult<APDU>(APDU_STEP.FINAL, null);
+    }
+
+    @Override
+    protected String finalResult() {
+        return mCplc;
     }
 
     class CplcStrategy implements IApduProviderStrategy {

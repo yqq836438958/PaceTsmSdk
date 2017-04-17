@@ -2,9 +2,11 @@
 package com.pace.processor.internal;
 
 import com.pace.processor.APDU;
+import com.pace.processor.IApduProvider;
 import com.pace.step.Step;
 
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class CardBaseBusiness {
     enum APDU_STEP {
@@ -12,20 +14,13 @@ public abstract class CardBaseBusiness {
     }
 
     private HashMap<APDU_STEP, ApduStep> mMap = new HashMap<APDU_STEP, ApduStep>();
-
-    public CardBaseBusiness() {
-        mMap.put(APDU_STEP.PREPARE, mPrepareStep);
-        mMap.put(APDU_STEP.APDU_PROVIDE, mProvideStep);
-        mMap.put(APDU_STEP.APDU_TRANSIMT, mTransmitStep);
-        mMap.put(APDU_STEP.APDU_CONSUME, mConsumeStep);
-        mMap.put(APDU_STEP.FINAL, mFinalStep);
-    }
-
+    protected IApduProvider mApduProvider = null;
+    private ApduStep mCurStep = null;
     private ApduStep mFinalStep = new ApduStep(APDU_STEP.FINAL) {
 
         @Override
         public void onStepHandle() {
-
+            // do nothing??
         }
     };
     private ApduStep mTransmitStep = new ApduStep(APDU_STEP.APDU_TRANSIMT) {
@@ -64,24 +59,21 @@ public abstract class CardBaseBusiness {
         }
 
     };
-    protected ApduStep mCurStep = null;
 
-    public abstract class ApduStep extends Step<APDU_STEP> {
+    public CardBaseBusiness() {
+        mMap.put(APDU_STEP.PREPARE, mPrepareStep);
+        mMap.put(APDU_STEP.APDU_PROVIDE, mProvideStep);
+        mMap.put(APDU_STEP.APDU_TRANSIMT, mTransmitStep);
+        mMap.put(APDU_STEP.APDU_CONSUME, mConsumeStep);
+        mMap.put(APDU_STEP.FINAL, mFinalStep);
+    }
 
-        private Object mInputParam = null;
-
-        public ApduStep(APDU_STEP step) {
-            super(step);
-            // TODO Auto-generated constructor stub
+    public String onCall(String input) {
+        mPrepareStep.onStepEnter();
+        // TODO ...
+        if (mFinalStep.isCurrentStep()) {
         }
-
-        public void setParam(Object obj) {
-            mInputParam = obj;
-        }
-
-        protected Object getParam() {
-            return mInputParam;
-        }
+        return finalResult();
     }
 
     public class ApduResult<TYPE> {
@@ -91,6 +83,10 @@ public abstract class CardBaseBusiness {
         public ApduResult(APDU_STEP step, TYPE obj) {
             mNewStep = step;
             mResult = obj;
+        }
+
+        public TYPE get() {
+            return mResult;
         }
 
         public void call(ApduStep oldStep) {
@@ -105,16 +101,27 @@ public abstract class CardBaseBusiness {
 
     }
 
-    public String onCall(String input) {
-        mPrepareStep.onStepEnter();
-        return finalResult();
-    }
-
     protected abstract ApduResult<Boolean> onCachPrepare();
 
     protected abstract ApduResult<APDU> onApduProvide(Object input);
 
-    protected abstract ApduResult onApduConsume(APDU apdu);
+    protected abstract ApduResult<APDU> onApduConsume(List<String> apduList);
 
-    protected abstract ApduResult<String> finalResult();
+    protected abstract String finalResult();
+
+    protected final ApduResult nextProvide(Object obj) {
+        return new ApduResult(APDU_STEP.APDU_PROVIDE, obj);
+    }
+
+    protected final ApduResult nextTransmit(Object obj) {
+        return new ApduResult(APDU_STEP.APDU_TRANSIMT, obj);
+    }
+
+    protected final ApduResult nextConsume(Object obj) {
+        return new ApduResult(APDU_STEP.APDU_PROVIDE, obj);
+    }
+
+    protected final ApduResult nextFinal(Object obj) {
+        return new ApduResult(APDU_STEP.FINAL, obj);
+    }
 }
