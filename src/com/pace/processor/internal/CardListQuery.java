@@ -7,8 +7,7 @@ import com.pace.common.ApduHelper;
 import com.pace.constants.CommonConstants;
 import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
-import com.pace.processor.ApduProcessor;
-import com.pace.processor.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.base.ApduResult;
 import com.pace.tosservice.GetTsmApdu;
 import com.pace.tosservice.TsmTosService;
 import com.pace.util.TextUtils;
@@ -18,14 +17,13 @@ import org.json.JSONArray;
 import java.util.List;
 
 // cardlistquery,from net or local
-public class CardListQuery extends ApduProcessor {
+public class CardListQuery extends CardBaseBusiness {
     // input:{"instance_aid":"xxx","invoke":0}
     // crs aid
     private boolean mIsLocalInvoke = false;
     private JSONArray mOutpArray = new JSONArray();
 
-    public CardListQuery(TaskEventSource param) {
-        super(param, CommonConstants.TASK_CARD_LIST);
+    public CardListQuery() {
         // TODO parse bLocalInvoke from param
     }
 
@@ -33,7 +31,7 @@ public class CardListQuery extends ApduProcessor {
     protected TaskEvent onPrepare(TaskEvent input) {
         String list = TsmCache.getCardList();
         if (!TextUtils.isEmpty(list)) {
-            return retrieveTaskEvent(list);
+            return nextFinal(list);
         }
         return null;
     }
@@ -73,5 +71,29 @@ public class CardListQuery extends ApduProcessor {
             return getApdu.requestApdu();
         }
 
+    }
+
+    @Override
+    protected ApduResult<Boolean> onCachPrepare() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduProvide(Object input) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String finalResult() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

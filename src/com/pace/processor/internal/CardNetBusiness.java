@@ -2,7 +2,8 @@
 package com.pace.processor.internal;
 
 import com.pace.processor.APDU;
-import com.pace.processor.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 import com.pace.tosservice.GetTsmApdu;
 import com.pace.tosservice.TsmTosService;
 
@@ -12,19 +13,19 @@ public class CardNetBusiness extends CardBaseBusiness {
 
     @Override
     protected ApduResult<Boolean> onCachPrepare() {
-        return new ApduResult(APDU_STEP.FINAL, true);
+        return nextProvide(null);
     }
 
     @Override
     protected ApduResult<APDU> onApduProvide(Object input) {
         APDU apdu = mApduProvider.call(new NetApduStrategy(input));
-        return new ApduResult(APDU_STEP.APDU_PROVIDE, apdu);
+        return nextTransmit(apdu);
     }
 
     @Override
     protected ApduResult<APDU> onApduConsume(List<String> apduList) {
         // TODO Auto-generated method stub
-        return null;
+        return nextProvide(null);
     }
 
     @Override

@@ -9,7 +9,6 @@ public abstract class ApduStep extends Step<APDU_STEP> {
 
     public ApduStep(APDU_STEP step) {
         super(step);
-        // TODO Auto-generated constructor stub
     }
 
     public void setParam(Object obj) {

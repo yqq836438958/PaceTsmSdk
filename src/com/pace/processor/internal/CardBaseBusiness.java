@@ -2,16 +2,15 @@
 package com.pace.processor.internal;
 
 import com.pace.processor.APDU;
-import com.pace.processor.IApduProvider;
-import com.pace.step.Step;
+import com.pace.processor.internal.base.APDU_STEP;
+import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.ApduStep;
+import com.pace.processor.internal.base.IApduProvider;
 
 import java.util.HashMap;
 import java.util.List;
 
 public abstract class CardBaseBusiness {
-    enum APDU_STEP {
-        PREPARE, APDU_PROVIDE, APDU_TRANSIMT, APDU_CONSUME, FINAL,
-    }
 
     private HashMap<APDU_STEP, ApduStep> mMap = new HashMap<APDU_STEP, ApduStep>();
     protected IApduProvider mApduProvider = null;
@@ -76,31 +75,6 @@ public abstract class CardBaseBusiness {
         return finalResult();
     }
 
-    public class ApduResult<TYPE> {
-        private TYPE mResult;
-        private APDU_STEP mNewStep = null;
-
-        public ApduResult(APDU_STEP step, TYPE obj) {
-            mNewStep = step;
-            mResult = obj;
-        }
-
-        public TYPE get() {
-            return mResult;
-        }
-
-        public void call(ApduStep oldStep) {
-            if (mNewStep != null) {
-                ApduStep newStep = mMap.get(mNewStep);
-                if (newStep != null) {
-                    newStep.setParam(mResult);
-                }
-                oldStep.switchStep(newStep);
-            }
-        }
-
-    }
-
     protected abstract ApduResult<Boolean> onCachPrepare();
 
     protected abstract ApduResult<APDU> onApduProvide(Object input);
@@ -109,19 +83,19 @@ public abstract class CardBaseBusiness {
 
     protected abstract String finalResult();
 
-    protected final ApduResult nextProvide(Object obj) {
-        return new ApduResult(APDU_STEP.APDU_PROVIDE, obj);
+    protected final <TYPE> ApduResult/* <TYPE> */ nextProvide(TYPE obj) {
+        return new ApduResult(mProvideStep, obj);
     }
 
-    protected final ApduResult nextTransmit(Object obj) {
-        return new ApduResult(APDU_STEP.APDU_TRANSIMT, obj);
+    protected final <TYPE> ApduResult nextTransmit(TYPE obj) {
+        return new ApduResult(mTransmitStep, obj);
     }
 
-    protected final ApduResult nextConsume(Object obj) {
-        return new ApduResult(APDU_STEP.APDU_PROVIDE, obj);
+    protected final <TYPE> ApduResult nextConsume(TYPE obj) {
+        return new ApduResult(mConsumeStep, obj);
     }
 
-    protected final ApduResult nextFinal(Object obj) {
-        return new ApduResult(APDU_STEP.FINAL, obj);
+    protected final <TYPE> ApduResult nextFinal(TYPE obj) {
+        return new ApduResult(mFinalStep, obj);
     }
 }
