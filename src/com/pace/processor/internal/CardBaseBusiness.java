@@ -1,8 +1,10 @@
 
 package com.pace.processor.internal;
 
+import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.APDU_STEP;
+import com.pace.processor.internal.base.ApduChainController.ApduChainNode;
 import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.base.ApduStep;
 import com.pace.processor.internal.base.IApduProvider;
@@ -10,7 +12,7 @@ import com.pace.processor.internal.base.IApduProvider;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class CardBaseBusiness {
+public abstract class CardBaseBusiness extends ApduChainNode {
 
     private HashMap<APDU_STEP, ApduStep> mMap = new HashMap<APDU_STEP, ApduStep>();
     protected IApduProvider mApduProvider = null;
@@ -67,7 +69,8 @@ public abstract class CardBaseBusiness {
         mMap.put(APDU_STEP.FINAL, mFinalStep);
     }
 
-    public String onCall(String input) {
+    @Override
+    public RET onCall(String input) {
         mPrepareStep.onStepEnter();
         // TODO ...
         if (mFinalStep.isCurrentStep()) {
@@ -81,7 +84,7 @@ public abstract class CardBaseBusiness {
 
     protected abstract ApduResult<APDU> onApduConsume(List<String> apduList);
 
-    protected abstract String finalResult();
+    protected abstract RET finalResult();
 
     protected final <TYPE> ApduResult/* <TYPE> */ nextProvide(TYPE obj) {
         return new ApduResult(mProvideStep, obj);

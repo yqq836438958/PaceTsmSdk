@@ -6,10 +6,11 @@ import com.pace.event.TaskEventSource;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 
 import com.pace.common.ApduHelper;
+import com.pace.common.RET;
 import com.pace.constants.CommonConstants;
-import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
-import com.pace.processor.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,41 +25,10 @@ public class CardSwitch extends CardBaseBusiness {
     private String mTargetOperateAid = null;
 
     // 需要依赖cardlistquery的结果
-    public CardSwitch(TaskEventSource param) {
-        super(param, CommonConstants.TASK_CARD_SWITCH);
+    public CardSwitch() {
         // 按照 activite status排序 ,生成mAidQueue
         // [{"instance_id":"aaaaaaaaaa","activite_status":"2",..},{""}]
         // mTargetOperateAid = ??/
-    }
-
-    @Override
-    protected TaskEvent onPrepare(TaskEvent input) {
-        SwitchCardElement element = mAidQueue.peek();
-        if (!mTargetOperateAid.equalsIgnoreCase(element.instance_id)
-                && !element.needAct) {
-            return repeatTaskEvent(element);
-        }
-        return null;
-    }
-
-    @Override
-    protected APDU onProvide(TaskEvent input) {
-        SwitchCardElement element = mAidQueue.peek();
-        return mApduProvider.call(new CardSwitchStrategy(element));
-    }
-
-    @Override
-    protected TaskEvent onPost(List<String> apdus) {
-        SwitchCardElement element = mAidQueue.poll();
-        SwitchCardElement newElement = element;
-        if (element == null) {
-            return retrieveTaskEvent(null);
-        }
-        if (ApduHelper.isResponseSuc(apdus)) {
-            // mTargetArray.put
-            mTargetArray.put(element);
-        }
-        return repeatTaskEvent(element);
     }
 
     class CardSwitchStrategy implements IApduProviderStrategy {
@@ -87,7 +57,12 @@ public class CardSwitch extends CardBaseBusiness {
 
     @Override
     protected ApduResult<Boolean> onCachPrepare() {
-        // TODO Auto-generated method stub
+        SwitchCardElement element = mAidQueue.peek();
+        if (!mTargetOperateAid.equalsIgnoreCase(element.instance_id)
+                && !element.needAct) {
+            return repeatTaskEvent(element);
+        }
+        // ????? TODO
         return null;
     }
 
@@ -95,18 +70,26 @@ public class CardSwitch extends CardBaseBusiness {
     protected ApduResult<APDU> onApduProvide(Object input) {
         SwitchCardElement element = mAidQueue.peek();
         APDU apdu = mApduProvider.call(new CardSwitchStrategy(element));
-        return new ApduResult<APDU>(step, obj);
+        return nextTransmit(apdu);
     }
 
     @Override
     protected ApduResult<APDU> onApduConsume(List<String> apduList) {
-        // TODO Auto-generated method stub
-        return null;
+        SwitchCardElement element = mAidQueue.poll();
+        SwitchCardElement newElement = element;
+        if (element == null) {
+            return nextFinal(null);
+        }
+        if (ApduHelper.isResponseSuc(apduList)) {
+            // mTargetArray.put
+            mTargetArray.put(element);
+        }
+        return nextProvide(null);
     }
 
     @Override
-    protected String finalResult() {
+    protected RET finalResult() {
         // TODO Auto-generated method stub
-        return null;
+        return RET.suc("");
     }
 }

@@ -4,10 +4,12 @@ package com.pace.processor.internal;
 import com.pace.event.TaskEventSource;
 import com.pace.cache.TsmCache;
 import com.pace.common.ApduHelper;
+import com.pace.common.RET;
 import com.pace.constants.CommonConstants;
 import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 import com.pace.tosservice.GetTsmApdu;
 import com.pace.tosservice.TsmTosService;
 import com.pace.util.TextUtils;
@@ -25,32 +27,6 @@ public class CardListQuery extends CardBaseBusiness {
 
     public CardListQuery() {
         // TODO parse bLocalInvoke from param
-    }
-
-    @Override
-    protected TaskEvent onPrepare(TaskEvent input) {
-        String list = TsmCache.getCardList();
-        if (!TextUtils.isEmpty(list)) {
-            return nextFinal(list);
-        }
-        return null;
-    }
-
-    @Override
-    protected APDU onProvide(TaskEvent input) {
-        return mApduProvider.call(new ListStrategy(input, ""));// TODO
-    }
-
-    @Override
-    protected TaskEvent onPost(List<String> apdus) {
-        // TODO Auto-generated method stub
-        // TODO
-        // 处理apdu rsp
-        if (mIsLocalInvoke) {
-            // 本地访问的时候需要额外解析
-
-        }
-        return retrieveTaskEvent(mOutpArray.toString());
     }
 
     public class ListStrategy implements IApduProviderStrategy {
@@ -75,25 +51,30 @@ public class CardListQuery extends CardBaseBusiness {
 
     @Override
     protected ApduResult<Boolean> onCachPrepare() {
-        // TODO Auto-generated method stub
-        return null;
+        String list = TsmCache.getCardList();
+        if (!TextUtils.isEmpty(list)) {
+            return nextFinal(list);
+        }
+        return nextProvide(null);
     }
 
     @Override
     protected ApduResult<APDU> onApduProvide(Object input) {
-        // TODO Auto-generated method stub
-        return null;
+        APDU apdu = mApduProvider.call(new ListStrategy(input, ""));
+        return nextTransmit(apdu);
     }
 
     @Override
     protected ApduResult<APDU> onApduConsume(List<String> apduList) {
-        // TODO Auto-generated method stub
-        return null;
+        if (mIsLocalInvoke) {
+            // 本地访问的时候需要额外解析
+
+        }
+        return nextProvide(mOutpArray.toString());
     }
 
     @Override
-    protected String finalResult() {
-        // TODO Auto-generated method stub
-        return null;
+    protected RET finalResult() {
+        return RET.suc(mOutpArray.toString());
     }
 }

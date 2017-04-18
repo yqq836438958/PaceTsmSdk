@@ -66,7 +66,10 @@ public class TaskEngineImp implements ITaskEngine, Callable<TaskEvent> {
         TaskEvent result = null;
         try {
             result = future.get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

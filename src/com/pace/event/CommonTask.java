@@ -1,8 +1,6 @@
 
 package com.pace.event;
 
-import com.pace.processor.ProcessorPools;
-
 import bolts.Continuation;
 import bolts.Task;
 
@@ -22,15 +20,12 @@ public class CommonTask implements ITask {
     }
 
     private IBaseProcessor findProcess() {
-        if (nextTaskPid > 0) {
-            return ProcessorPools.get().getProcess(mContext.getParam(), nextTaskPid);
-        }
-        return ProcessorPools.get().getProcess(mContext.getParam());
+        return null;
     }
 
     @Override
     public void clear() {
-        ProcessorPools.get().clear();
+        // ProcessorPools.get().clear();
     }
 
     @Override

@@ -1,6 +1,7 @@
 
 package com.pace.processor.internal;
 
+import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
@@ -29,9 +30,9 @@ public class CardNetBusiness extends CardBaseBusiness {
     }
 
     @Override
-    protected String finalResult() {
+    protected RET finalResult() {
         // TODO Auto-generated method stub
-        return null;
+        return RET.suc("");
     }
 
     public static class NetApduStrategy implements IApduProviderStrategy {

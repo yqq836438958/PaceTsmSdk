@@ -2,6 +2,7 @@
 package com.pace.processor.internal;
 
 import com.pace.cache.TsmCache;
+import com.pace.common.RET;
 import com.pace.constants.ApduConstants;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.APDU_STEP;
@@ -42,8 +43,8 @@ public class CardCplc extends CardBaseBusiness {
     }
 
     @Override
-    protected String finalResult() {
-        return mCplc;
+    protected RET finalResult() {
+        return RET.suc(mCplc);
     }
 
     class CplcStrategy implements IApduProviderStrategy {
