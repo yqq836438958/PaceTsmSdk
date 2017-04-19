@@ -10,6 +10,19 @@ import com.pace.processor.internal.base.ApduChainController;
 
 public class Dispatcher {
 
+    private static volatile Dispatcher sInstance = null;
+
+    public static Dispatcher getInstance() {
+        if (sInstance == null) {
+            synchronized (Dispatcher.class) {
+                if (sInstance == null) {
+                    sInstance = new Dispatcher();
+                }
+            }
+        }
+        return sInstance;
+    }
+
     public final RET invoke(String msg, IBusinessType type) {
         if (type == null) {
             return RET.err(msg);

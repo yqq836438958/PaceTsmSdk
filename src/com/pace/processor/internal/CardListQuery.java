@@ -1,12 +1,10 @@
 
 package com.pace.processor.internal;
 
-import com.pace.event.TaskEventSource;
 import com.pace.cache.TsmCache;
 import com.pace.common.ApduHelper;
 import com.pace.common.RET;
 import com.pace.constants.CommonConstants;
-import com.pace.event.TaskEvent;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;

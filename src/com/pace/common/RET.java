@@ -10,6 +10,14 @@ public class RET {
         sMsg = str;
     }
 
+    public int getCode() {
+        return iRet;
+    }
+
+    public String getMsg() {
+        return sMsg;
+    }
+
     public static boolean isError(RET ret) {
         return ret.iRet != 0;
     }
@@ -30,4 +38,7 @@ public class RET {
         return new RET(ErrCode.ERR_COMMON, err);
     }
 
+    public static RET empty() {
+        return RET.err("");
+    }
 }

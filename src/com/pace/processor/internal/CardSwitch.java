@@ -1,8 +1,6 @@
 
 package com.pace.processor.internal;
 
-import com.pace.event.TaskEventSource;
-
 import android.provider.ContactsContract.CommonDataKinds.Email;
 
 import com.pace.common.ApduHelper;
@@ -43,7 +41,8 @@ public class CardSwitch extends CardBaseBusiness {
             if (mElement == null) {
                 return null;
             }
-            String apdu = mElement.install_status > 0 ? ApduHelper.activeAid(mElement.instance_id)
+            // TODO need check!
+            String apdu = mElement.needAct ? ApduHelper.activeAid(mElement.instance_id)
                     : ApduHelper.disactiveAid(mElement.instance_id);
             return new APDU(apdu);
         }
@@ -60,9 +59,9 @@ public class CardSwitch extends CardBaseBusiness {
         SwitchCardElement element = mAidQueue.peek();
         if (!mTargetOperateAid.equalsIgnoreCase(element.instance_id)
                 && !element.needAct) {
-            return repeatTaskEvent(element);
+            return null;
         }
-        // ????? TODO
+        // TODO need check!
         return null;
     }
 

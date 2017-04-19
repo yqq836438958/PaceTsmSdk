@@ -1,11 +1,9 @@
 
 package com.pace.processor.internal;
 
-import com.pace.event.TaskEventSource;
 import com.pace.plugin.ICardPluginService;
 import com.pace.plugin.PluginManager;
 import com.pace.common.RET;
-import com.pace.constants.CommonConstants;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;

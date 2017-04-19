@@ -4,10 +4,13 @@ package com.pace.tsm;
 import android.content.Context;
 
 import com.pace.api.IApduChannel;
-import com.pace.constants.CommonConstants;
-
-import java.util.Arrays;
-import java.util.List;
+import com.pace.common.RET;
+import com.pace.processor.Dispatcher.CardCplcType;
+import com.pace.processor.Dispatcher.CardListQueryType;
+import com.pace.processor.Dispatcher.CardNetBusinessType;
+import com.pace.processor.Dispatcher.CardQueryType;
+import com.pace.processor.Dispatcher.CardSwitchType;
+import com.pace.processor.Dispatcher.IBusinessType;
 
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
@@ -22,32 +25,46 @@ public class TsmApi {
         sContext = context;
     }
 
-    public static String issueCard(String input) {
-        return invokeCardBusiness(input);
+    public static int cardIssue(String input, String[] output) {
+        return invokeInteranl(new CardNetBusinessType(), input, output);
     }
 
-    private static String invokeCardBusiness(String input) {
+    public static int cardTopup(String input, String[] output) {
+        return invokeInteranl(new CardNetBusinessType(), input, output);
+    }
+
+    public static int cardListQuery(String[] output) {
+        return invokeInteranl(new CardListQueryType(), "", output);
+    }
+
+    public static int cardQuery(String input, String[] output) {
+        return invokeInteranl(new CardQueryType(), input, output);
+    }
+
+    public static int cardSwitch(String aid) {
+        return invokeInteranl(new CardSwitchType(), aid, null);
+    }
+
+    public static int cardCplc(String[] output) {
+        return invokeInteranl(new CardCplcType(), "", output);
+    }
+
+    private static RET invokeCardInnerRet(String input, IBusinessType type) {
         TsmLauncher launcher = TsmLauncher.get();
-        List<Integer> routList = Arrays.asList(CommonConstants.TASK_CARD_CPLC,
-                CommonConstants.TASK_CARD_NET_BUSINESS);
-        long reqId = launcher.sendReq(input, CommonConstants.TASK_CARD_NET_BUSINESS, routList);
-        return launcher.waitRsp(reqId);
+        long lreq = launcher.sendReq(input, type);
+        RET result = launcher.waitRsp(lreq);
+        return result;
     }
 
-    public static String topupCard(String input) {
-        return invokeCardBusiness(input);
+    private static int parseExeResult(RET ret, String[] output) {
+        if (output != null && output.length > 0) {
+            output[0] = ret.getMsg();
+        }
+        return ret.getCode();
     }
 
-    public static String cardListQuery() {
-        return null;
+    private static int invokeInteranl(IBusinessType type, String input, String[] output) {
+        RET ret = invokeCardInnerRet(input, type);
+        return parseExeResult(ret, output);
     }
-
-    public static String cardQuery() {
-        return null;
-    }
-
-    public static String cardSwitch(String aid) {
-        return null;
-    }
-
 }
