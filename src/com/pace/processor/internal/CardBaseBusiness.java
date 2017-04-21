@@ -14,7 +14,6 @@ import java.util.List;
 
 public abstract class CardBaseBusiness extends ApduChainNode {
 
-    private HashMap<APDU_STEP, ApduStep> mMap = new HashMap<APDU_STEP, ApduStep>();
     protected IApduProvider mApduProvider = null;
     private ApduStep mCurStep = null;
     private ApduStep mFinalStep = new ApduStep(APDU_STEP.FINAL) {
@@ -62,15 +61,11 @@ public abstract class CardBaseBusiness extends ApduChainNode {
     };
 
     public CardBaseBusiness() {
-        mMap.put(APDU_STEP.PREPARE, mPrepareStep);
-        mMap.put(APDU_STEP.APDU_PROVIDE, mProvideStep);
-        mMap.put(APDU_STEP.APDU_TRANSIMT, mTransmitStep);
-        mMap.put(APDU_STEP.APDU_CONSUME, mConsumeStep);
-        mMap.put(APDU_STEP.FINAL, mFinalStep);
     }
 
     @Override
     public RET onCall(String input) {
+        mPrepareStep.setParam(input);
         mPrepareStep.onStepEnter();
         // TODO ...
         if (mFinalStep.isCurrentStep()) {
