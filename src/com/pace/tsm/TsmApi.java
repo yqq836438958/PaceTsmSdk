@@ -26,15 +26,22 @@ public class TsmApi {
     }
 
     public static int cardIssue(String input, String[] output) {
+        // 继续给input追加字段，这样后续处理者，可以区分命令
         return invokeInteranl(new CardNetBusinessType(), input, output);
     }
 
     public static int cardTopup(String input, String[] output) {
+        // 继续给input追加字段，这样后续处理者，可以区分命令
         return invokeInteranl(new CardNetBusinessType(), input, output);
     }
 
     public static int cardListQuery(String[] output) {
         return invokeInteranl(new CardListQueryType(), "", output);
+    }
+
+    public static int cardSeInit(String[] output) {
+        // 继续给input追加字段，这样后续处理者，可以区分命令
+        return invokeInteranl(new CardNetBusinessType(), "", output);
     }
 
     public static int cardQuery(String input, String[] output) {

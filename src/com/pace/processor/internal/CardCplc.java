@@ -3,11 +3,9 @@ package com.pace.processor.internal;
 
 import com.pace.cache.TsmCache;
 import com.pace.common.RET;
-import com.pace.constants.ApduConstants;
 import com.pace.processor.APDU;
-import com.pace.processor.internal.base.APDU_STEP;
 import com.pace.processor.internal.base.ApduResult;
-import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.provider.CplcStrategy;
 import com.pace.util.TextUtils;
 
 import java.util.ArrayList;
@@ -20,44 +18,33 @@ public class CardCplc extends CardBaseBusiness {
     }
 
     @Override
-    protected ApduResult<Boolean> onCachPrepare() {
+    protected ApduResult<APDU> onPrepare(String sourceInput) {
         String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.getCplc() : mCplc;
         if (TextUtils.isEmpty(cacheCplc)) {
-            return nextProvide(Boolean.FALSE);
+            return nextProvide(null);
         }
         mCplc = cacheCplc;
-        return nextFinal(mCplc);
+        return nextFinal(null);
     }
 
     @Override
-    protected ApduResult<APDU> onApduProvide(Object input) {
+    protected ApduResult onApduProvide(Object input) {
         APDU apdu = mApduProvider.call(new CplcStrategy());
         return nextTransmit(apdu);
     }
 
     @Override
-    protected ApduResult<APDU> onApduConsume(List<String> apdus) {
+    protected ApduResult onApduConsume(List<String> apdus) {
         mCplc = apdus.get(0);
         TsmCache.saveCplc(mCplc);
-        return nextFinal(mCplc);
+        return nextFinal(RET.suc(mCplc));
     }
 
-    @Override
-    protected RET finalResult() {
-        return RET.suc(mCplc);
-    }
-
-    class CplcStrategy implements IApduProviderStrategy {
-
-        public CplcStrategy() {
+    private List getList() {
+        if (true) {
+            return new ArrayList<String>();
+        } else {
+            return new ArrayList<Integer>();
         }
-
-        @Override
-        public APDU provide() {
-            List<String> list = new ArrayList<String>();
-            list.add(ApduConstants.CPLC);
-            return new APDU(list);
-        }
-
     }
 }

@@ -4,51 +4,33 @@ package com.pace.processor.internal;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
-import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
-import com.pace.tosservice.GetTsmApdu;
-import com.pace.tosservice.TsmTosService;
+import com.pace.processor.internal.base.NetApduStore;
+import com.pace.processor.internal.provider.NetApduStrategy;
 
 import java.util.List;
 
 public class CardNetBusiness extends CardBaseBusiness {
+    private int mType = 0;
+    private String mOutput = "";
 
     @Override
-    protected ApduResult<Boolean> onCachPrepare() {
+    protected ApduResult<APDU> onPrepare(String sourceInput) {
         return nextProvide(null);
     }
 
     @Override
-    protected ApduResult<APDU> onApduProvide(Object input) {
+    protected ApduResult onApduProvide(Object input) {
         APDU apdu = mApduProvider.call(new NetApduStrategy(input));
-        return nextTransmit(apdu);
+        if (apdu.getRet() == 0) {
+            return nextTransmit(apdu);
+        }
+        return nextFinal(RET.suc(mOutput));
     }
 
     @Override
     protected ApduResult<APDU> onApduConsume(List<String> apduList) {
-        // TODO Auto-generated method stub
-        return nextProvide(null);
-    }
-
-    @Override
-    protected RET finalResult() {
-        // TODO Auto-generated method stub
-        return RET.suc("");
-    }
-
-    public static class NetApduStrategy implements IApduProviderStrategy {
-
-        // 请求参数
-        public NetApduStrategy(Object input) {
-        }
-
-        @Override
-        public APDU provide() {
-
-            // TODO 解析出来
-            TsmTosService getApdu = new GetTsmApdu();
-            return getApdu.requestApdu();
-        }
-
+        NetApduStore.get().append(mType, apduList);
+        return nextProvide(new APDU(apduList));
     }
 
 }

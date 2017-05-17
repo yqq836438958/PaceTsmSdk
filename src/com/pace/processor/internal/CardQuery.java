@@ -6,7 +6,9 @@ import com.pace.plugin.PluginManager;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.CardTagElement;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.provider.CardTagQueryStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,48 +26,23 @@ public class CardQuery extends CardBaseBusiness {
         mOutPut = new JSONObject();
     }
 
-    public static class CardTagQueryStrategy implements IApduProviderStrategy {
-        private CardTagElement mCardTagElement = null;
-
-        public CardTagQueryStrategy(CardTagElement input) {
-            mCardTagElement = input;
-        }
-
-        @Override
-        public APDU provide() {
-            ICardPluginService service = PluginManager.getInstance().getService();
-            if (service == null) {
-                return null;
-            }
-            return new APDU(
-                    service.fetchDetailReq(mCardTagElement.aid, mCardTagElement.tag));
-        }
-
-    }
-
-    class CardTagElement implements Serializable {
-        private static final long serialVersionUID = 1L;
-        private String aid;
-        private String tag;
-    }
-
     @Override
-    protected ApduResult<Boolean> onCachPrepare() {
+    protected ApduResult onPrepare(String sourceInput) {
         return nextProvide(null);
     }
 
     @Override
-    protected ApduResult<APDU> onApduProvide(Object input) {
+    protected ApduResult onApduProvide(Object input) {
         CardTagElement element = mCardTagElements.peek();
         APDU apdu = mApduProvider.call(new CardTagQueryStrategy(element));
         return nextTransmit(apdu);
     }
 
     @Override
-    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+    protected ApduResult onApduConsume(List<String> apduList) {
         CardTagElement element = mCardTagElements.poll();
         if (element == null) {
-            return nextFinal(mOutPut.toString());
+            return nextFinal(RET.suc(mOutPut.toString()));
         }
         ICardPluginService service = PluginManager.getInstance().getService();
         String parseData = service.parseDetailRsp(element.aid, element.tag, apduList);
@@ -77,8 +54,4 @@ public class CardQuery extends CardBaseBusiness {
         return nextProvide(null);
     }
 
-    @Override
-    protected RET finalResult() {
-        return RET.suc(mOutPut.toString());
-    }
 }

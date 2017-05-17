@@ -8,6 +8,7 @@ import com.pace.constants.CommonConstants;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
+import com.pace.processor.internal.provider.ListStrategy;
 import com.pace.tosservice.GetTsmApdu;
 import com.pace.tosservice.TsmTosService;
 import com.pace.util.TextUtils;
@@ -27,52 +28,32 @@ public class CardListQuery extends CardBaseBusiness {
         // TODO parse bLocalInvoke from param
     }
 
-    public class ListStrategy implements IApduProviderStrategy {
-        private String mAidCRS;
-
-        public ListStrategy(Object input, String crsAid) {
-            mAidCRS = crsAid;
-        }
-
-        @Override
-        public APDU provide() {
-            if (!TextUtils.isEmpty(mAidCRS)) {
-                return new APDU(ApduHelper.lsCRS(mAidCRS));
-            }
-
-            // 解析出来，放到数据里面去GetTsmApdu去填充
-            TsmTosService getApdu = new GetTsmApdu();
-            return getApdu.requestApdu();
-        }
-
-    }
-
     @Override
-    protected ApduResult<Boolean> onCachPrepare() {
+    protected ApduResult onPrepare(String sourceInput) {
         String list = TsmCache.getCardList();
         if (!TextUtils.isEmpty(list)) {
-            return nextFinal(list);
+            return nextFinal(RET.suc(list));
         }
         return nextProvide(null);
     }
 
     @Override
-    protected ApduResult<APDU> onApduProvide(Object input) {
+    protected ApduResult onApduProvide(Object input) {
         APDU apdu = mApduProvider.call(new ListStrategy(input, ""));
         return nextTransmit(apdu);
     }
 
     @Override
-    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+    protected ApduResult onApduConsume(List<String> apduList) {
         if (mIsLocalInvoke) {
             // 本地访问的时候需要额外解析
 
         }
-        return nextProvide(mOutpArray.toString());
+        return nextProvide(new APDU(apduList));
     }
 
-    @Override
-    protected RET finalResult() {
-        return RET.suc(mOutpArray.toString());
-    }
+    // @Override
+    // protected RET finalResult() {
+    // return RET.suc(mOutpArray.toString());
+    // }
 }

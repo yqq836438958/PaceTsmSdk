@@ -6,9 +6,14 @@ import com.qq.taf.jce.JceStruct;
 
 public class GetTsmApdu extends TsmTosService {
 
+    public GetTsmApdu() {
+        // TODO Auto-generated constructor stub
+    }
+
     @Override
     public JceStruct getReq(JceStruct payReqHead) {
         // TODO Auto-generated method stub
+
         return null;
     }
 
