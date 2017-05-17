@@ -48,10 +48,10 @@ public class CardListQuery extends CardBaseBusiness {
     }
 
     @Override
-    protected ApduResult<Boolean> onCachPrepare() {
+    protected ApduResult<Boolean> onPrepare(String sourceInput) {
         String list = TsmCache.getCardList();
         if (!TextUtils.isEmpty(list)) {
-            return nextFinal(list);
+            return nextFinal(null);
         }
         return nextProvide(null);
     }
@@ -68,7 +68,7 @@ public class CardListQuery extends CardBaseBusiness {
             // 本地访问的时候需要额外解析
 
         }
-        return nextProvide(mOutpArray.toString());
+        return nextProvide(new APDU(apduList));
     }
 
     @Override

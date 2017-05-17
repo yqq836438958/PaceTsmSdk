@@ -1,15 +1,17 @@
 
 package com.pace.processor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class APDU {
-    // 用于执行请求的APDU
+public class APDU implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private List<String> data;
-    private int index;
-    private int checkPoint;
-    private String sSession = "";// TODO
+    private int iRet;
 
     public APDU(List<String> list) {
         data = list;
@@ -20,16 +22,12 @@ public class APDU {
         data.add(apdu);
     }
 
-    public int getSeqId() {
-        return index;
-    }
-
-    public int getCheckPoint() {
-        return checkPoint;
-    }
-
     public List<String> getData() {
         return data;
+    }
+
+    public int getRet() {
+        return iRet;
     }
 
     public boolean isEmpty() {

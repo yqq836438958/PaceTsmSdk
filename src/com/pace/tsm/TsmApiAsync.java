@@ -10,7 +10,7 @@ import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
 
-public class TsmApiAsync {
+public class TsmApiAsync extends TsmApi {
     public static interface ITsmApiCallback {
         void onCallback(int code, String result);
     }
