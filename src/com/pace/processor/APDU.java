@@ -27,16 +27,20 @@ public class APDU implements Serializable {
         return data;
     }
 
-    public int getRet() {
-        return iRet;
-    }
-
     public String getOut() {
         return sOut;
     }
 
     public void setOut(String result) {
         sOut = result;
+    }
+
+    public List<String> getData() {
+        return data;
+    }
+
+    public int getRet() {
+        return iRet;
     }
 
     public boolean isEmpty() {

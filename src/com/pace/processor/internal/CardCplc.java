@@ -8,7 +8,6 @@ import com.pace.processor.internal.base.ApduResult;
 import com.pace.processor.internal.provider.CplcStrategy;
 import com.pace.util.TextUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CardCplc extends CardBaseBusiness {
@@ -40,11 +39,4 @@ public class CardCplc extends CardBaseBusiness {
         return nextFinal(RET.suc(mCplc));
     }
 
-    private List getList() {
-        if (true) {
-            return new ArrayList<String>();
-        } else {
-            return new ArrayList<Integer>();
-        }
-    }
 }

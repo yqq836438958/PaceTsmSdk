@@ -5,6 +5,7 @@ import com.pace.common.ApduHelper;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 import com.pace.processor.internal.base.SwitchCardElement;
 import com.pace.processor.internal.provider.CardSwitchStrategy;
 
@@ -20,7 +21,7 @@ public class CardSwitch extends CardBaseBusiness {
     private String mTargetOperateAid = null;
 
     @Override
-    protected ApduResult<APDU> onPrepare(String sourceInput) {
+    protected ApduResult onPrepare(String sourceInput) {
         SwitchCardElement element = mAidQueue.peek();
         if (!mTargetOperateAid.equalsIgnoreCase(element.instance_id)
                 && !element.needAct) {
