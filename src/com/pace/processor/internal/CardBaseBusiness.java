@@ -1,8 +1,10 @@
 
 package com.pace.processor.internal;
 
+import com.pace.common.ApduHelper;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
+import com.pace.processor.channel.ApduChannel;
 import com.pace.processor.internal.base.APDU_STEP;
 import com.pace.processor.internal.base.ApduChainController.ApduChainNode;
 import com.pace.processor.internal.base.ApduResult;
@@ -21,15 +23,22 @@ public abstract class CardBaseBusiness extends ApduChainNode {
         @Override
         public void onStepHandle() {
             // do nothing??
-
+            mFinalRet = (RET) getParam();
         }
     };
     private ApduStep mTransmitStep = new ApduStep(APDU_STEP.APDU_TRANSIMT) {
 
         @Override
         public void onStepHandle() {
-            // TODO Auto-generated method stub
-
+            List<String> input = (List<String>) getParam();
+            List<String> output = ApduChannel.get().transmit(input);
+            ApduResult result = null;
+            if (output != null && ApduHelper.isResponseSuc(output)) {
+                result = nextProvide(output);
+            } else {
+                result = nextFinal("");
+            }
+            result.call(this);
         }
 
     };
@@ -38,17 +47,16 @@ public abstract class CardBaseBusiness extends ApduChainNode {
         @Override
         public void onStepHandle() {
             Object input = getParam();
-            ApduResult<APDU> result = onApduProvide(input);
+            ApduResult result = onApduProvide(input);
             result.call(this);
         }
-
     };
     private ApduStep mPrepareStep = new ApduStep(APDU_STEP.PREPARE) {
 
         @Override
         public void onStepHandle() {
             String input = (String) getParam();
-            ApduResult<APDU> result = onPrepare(input);
+            ApduResult result = onPrepare(input);
             result.call(this);
         }
     };
@@ -56,8 +64,9 @@ public abstract class CardBaseBusiness extends ApduChainNode {
 
         @Override
         public void onStepHandle() {
-            // TODO Auto-generated method stub
-
+            List<String> input = (List<String>) getParam();
+            ApduResult result = onApduConsume(input);
+            result.call(this);
         }
 
     };

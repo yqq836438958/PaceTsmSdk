@@ -5,12 +5,16 @@ import android.content.Context;
 
 import com.pace.api.IApduChannel;
 import com.pace.common.RET;
+import com.pace.constants.CommonConstants.NET_BUSINESS_TYPE;
 import com.pace.processor.Dispatcher.CardCplcType;
 import com.pace.processor.Dispatcher.CardListQueryType;
 import com.pace.processor.Dispatcher.CardNetBusinessType;
 import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
@@ -26,13 +30,13 @@ public class TsmApi {
     }
 
     public static int cardIssue(String input, String[] output) {
-        // 继续给input追加字段，这样后续处理者，可以区分命令
-        return invokeInteranl(new CardNetBusinessType(), input, output);
+        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal());
+        return invokeInteranl(new CardNetBusinessType(), newInput, output);
     }
 
     public static int cardTopup(String input, String[] output) {
-        // 继续给input追加字段，这样后续处理者，可以区分命令
-        return invokeInteranl(new CardNetBusinessType(), input, output);
+        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
+        return invokeInteranl(new CardNetBusinessType(), newInput, output);
     }
 
     public static int cardListQuery(String[] output) {
@@ -40,8 +44,8 @@ public class TsmApi {
     }
 
     public static int cardSeInit(String[] output) {
-        // 继续给input追加字段，这样后续处理者，可以区分命令
-        return invokeInteranl(new CardNetBusinessType(), "", output);
+        String newInput = appendInputSrc("", NET_BUSINESS_TYPE.TYPE_SEINIT.ordinal());
+        return invokeInteranl(new CardNetBusinessType(), newInput, output);
     }
 
     public static int cardQuery(String input, String[] output) {
@@ -73,5 +77,18 @@ public class TsmApi {
     private static int invokeInteranl(IBusinessType type, String input, String[] output) {
         RET ret = invokeCardInnerRet(input, type);
         return parseExeResult(ret, output);
+    }
+
+    protected static String appendInputSrc(String src, int operateType) {
+        String target = src;
+        try {
+            JSONObject object = new JSONObject(src);
+            object.put("operate", operateType);
+            target = object.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return target;
     }
 }

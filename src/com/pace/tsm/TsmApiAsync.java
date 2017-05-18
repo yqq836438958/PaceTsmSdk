@@ -3,6 +3,7 @@ package com.pace.tsm;
 
 import com.pace.common.RET;
 import com.pace.common.ThreadExecutors;
+import com.pace.constants.CommonConstants.NET_BUSINESS_TYPE;
 import com.pace.processor.Dispatcher.CardCplcType;
 import com.pace.processor.Dispatcher.CardListQueryType;
 import com.pace.processor.Dispatcher.CardNetBusinessType;
@@ -32,11 +33,13 @@ public class TsmApiAsync extends TsmApi {
     }
 
     public static void cardIssue(String input, ITsmApiCallback callback) {
-        invokeBusinessInternal(input, new CardNetBusinessType(), callback);
+        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal());
+        invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
     }
 
     public static void cardTopup(String input, ITsmApiCallback callback) {
-        invokeBusinessInternal(input, new CardNetBusinessType(), callback);
+        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
+        invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
     }
 
     private static long sendBusinessReq(String input, IBusinessType type) {

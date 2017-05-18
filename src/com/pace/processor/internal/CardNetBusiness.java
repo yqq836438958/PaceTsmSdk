@@ -14,7 +14,7 @@ public class CardNetBusiness extends CardBaseBusiness {
     private String mOutput = "";
 
     @Override
-    protected ApduResult<APDU> onPrepare(String sourceInput) {
+    protected ApduResult onPrepare(String sourceInput) {
         return nextProvide(null);
     }
 
@@ -28,7 +28,7 @@ public class CardNetBusiness extends CardBaseBusiness {
     }
 
     @Override
-    protected ApduResult<APDU> onApduConsume(List<String> apduList) {
+    protected ApduResult onApduConsume(List<String> apduList) {
         NetApduStore.get().append(mType, apduList);
         return nextProvide(new APDU(apduList));
     }
