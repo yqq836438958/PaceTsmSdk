@@ -2,6 +2,7 @@
 package com.pace.common;
 
 public class RET {
+    public static final int RET_IGONRE = 1;
     private int iRet;
     private String sMsg;
 
@@ -14,6 +15,14 @@ public class RET {
         return iRet;
     }
 
+    public void setCode(int code) {
+        iRet = code;
+    }
+
+    public void setMsg(String msg) {
+        sMsg = msg;
+    }
+
     public String getMsg() {
         return sMsg;
     }
@@ -22,20 +31,24 @@ public class RET {
         return ret.iRet != 0;
     }
 
+    public static RET newObj(int i, String str) {
+        return new RET(i, str);
+    }
+
     public static RET suc(String str) {
-        return new RET(0, str);
+        return newObj(0, str);
     }
 
     public static RET error(int err, String errStr) {
-        return new RET(err, errStr);
+        return newObj(err, errStr);
     }
 
     public static RET err(int err) {
-        return new RET(err, "");
+        return newObj(err, "");
     }
 
     public static RET err(String err) {
-        return new RET(ErrCode.ERR_COMMON, err);
+        return newObj(ErrCode.ERR_COMMON, err);
     }
 
     public static RET empty() {

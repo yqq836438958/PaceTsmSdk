@@ -52,8 +52,4 @@ public class CardListQuery extends CardBaseBusiness {
         return nextProvide(new APDU(apduList));
     }
 
-    // @Override
-    // protected RET finalResult() {
-    // return RET.suc(mOutpArray.toString());
-    // }
 }
