@@ -2,7 +2,9 @@
 package com.pace.common;
 
 public class RET {
-    public static final int RET_IGONRE = 1;
+    public static final int RET_OVER = 1;
+    public static final int RET_NEXT = 0;
+    public static final int RET_REFRESH = 2;
     private int iRet;
     private String sMsg;
 

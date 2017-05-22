@@ -2,17 +2,18 @@
 package com.pace.event;
 
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.bean.ParamBean;
 
 public class Event {
     private IBusinessType type;
-    private String sMsg;
+    private ParamBean sMsg;
 
-    Event(IBusinessType t, String str) {
+    Event(IBusinessType t, ParamBean str) {
         type = t;
         sMsg = str;
     }
 
-    String getMsg() {
+    ParamBean getMsg() {
         return sMsg;
     }
 

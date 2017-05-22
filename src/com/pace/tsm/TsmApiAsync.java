@@ -10,6 +10,7 @@ import com.pace.processor.Dispatcher.CardNetBusinessType;
 import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.bean.ParamBean;
 
 public class TsmApiAsync extends TsmApi {
     public static interface ITsmApiCallback {
@@ -17,37 +18,41 @@ public class TsmApiAsync extends TsmApi {
     }
 
     public static void cardCplc(ITsmApiCallback callback) {
-        invokeBusinessInternal("", new CardCplcType(), callback);
+        ParamBean newInput = new ParamBean("");
+        invokeBusinessInternal(newInput, new CardCplcType(), callback);
     }
 
     public static void cardQuery(String input, ITsmApiCallback callback) {
-        invokeBusinessInternal(input, new CardQueryType(), callback);
+        ParamBean newInput = new ParamBean(input);
+        invokeBusinessInternal(newInput, new CardQueryType(), callback);
     }
 
     public static void cardListQuery(ITsmApiCallback callback) {
-        invokeBusinessInternal("", new CardListQueryType(), callback);
+        ParamBean newInput = new ParamBean("");
+        invokeBusinessInternal(newInput, new CardListQueryType(), callback);
     }
 
     public static void cardSwitch(String input, ITsmApiCallback callback) {
-        invokeBusinessInternal(input, new CardSwitchType(), callback);
+        ParamBean newInput = new ParamBean(input);
+        invokeBusinessInternal(newInput, new CardSwitchType(), callback);
     }
 
     public static void cardIssue(String input, ITsmApiCallback callback) {
-        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal());
+        ParamBean newInput = new ParamBean(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal());
         invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
     }
 
     public static void cardTopup(String input, ITsmApiCallback callback) {
-        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
+        ParamBean newInput = new ParamBean(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
         invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
     }
 
-    private static long sendBusinessReq(String input, IBusinessType type) {
+    private static long sendBusinessReq(ParamBean input, IBusinessType type) {
         TsmLauncher launcher = TsmLauncher.get();
         return launcher.sendReq(input, type);
     }
 
-    private static void invokeBusinessInternal(String input, IBusinessType type,
+    private static void invokeBusinessInternal(ParamBean input, IBusinessType type,
             ITsmApiCallback callback) {
         long lReq = sendBusinessReq(input, type);
         if (lReq < 0) {

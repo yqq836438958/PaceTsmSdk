@@ -5,4 +5,8 @@ public class ErrCode {
     public static final int ERR_COMMON = -1;
     public static final int ERR_LOCAL_APDU_NULL = -2;
     public static final int ERR_NET_APDU_NULL = -3;
+    public static final int ERR_RSP_APDU_NULL = -4;
+    public static final int ERR_RSP_APDU_FAIL = -5;
+
+    public static final int ERR_CARDLIST_NULL = 10001; // 列表为空
 }

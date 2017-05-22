@@ -1,11 +1,15 @@
 
 package com.pace.processor;
 
+import com.pace.common.ApduHelper;
 import com.pace.common.RET;
+import com.pace.constants.ApduConstants;
+import com.pace.processor.bean.ParamBean;
 import com.pace.processor.internal.CardCplc;
 import com.pace.processor.internal.CardListQuery;
 import com.pace.processor.internal.CardNetBusiness;
 import com.pace.processor.internal.CardQuery;
+import com.pace.processor.internal.CardSwitch;
 import com.pace.processor.internal.base.ApduChainController;
 
 public class Dispatcher {
@@ -23,21 +27,21 @@ public class Dispatcher {
         return sInstance;
     }
 
-    public final RET invoke(String msg, IBusinessType type) {
+    public final RET invoke(ParamBean msg, IBusinessType type) {
         if (type == null) {
-            return RET.err(msg);
+            return RET.err(msg.getData());
         }
         return type.call(msg);
     }
 
     public static interface IBusinessType {
-        public RET call(String msg);
+        public RET call(ParamBean msg);
     }
 
     public static class CardListQueryType implements IBusinessType {
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             ApduChainController controller = new ApduChainController();
             controller.add(new CardCplc());
             controller.add(new CardListQuery());
@@ -48,7 +52,7 @@ public class Dispatcher {
     public static class CardQueryType implements IBusinessType {
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             ApduChainController controller = new ApduChainController();
             controller.add(new CardCplc());
             controller.add(new CardQuery());
@@ -59,7 +63,7 @@ public class Dispatcher {
     public static class CardCplcType implements IBusinessType {
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             ApduChainController controller = new ApduChainController();
             controller.add(new CardCplc());
             return controller.invoke(msg);
@@ -69,7 +73,7 @@ public class Dispatcher {
     public static class CardNetBusinessType implements IBusinessType {
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             ApduChainController controller = new ApduChainController();
             controller.add(new CardCplc());
             controller.add(new CardNetBusiness());
@@ -80,10 +84,10 @@ public class Dispatcher {
     public static class CardSwitchType implements IBusinessType {
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             ApduChainController controller = new ApduChainController();
-            controller.add(new CardCplc());
-            controller.add(new CardNetBusiness());
+            controller.add(new CardListQuery(ApduConstants.AID_CRS));
+            controller.add(new CardSwitch());
             return controller.invoke(msg);
         }
     }

@@ -14,7 +14,7 @@ public class TsmCache {
         return null;
     }
 
-    public void saveCardList(String list) {
+    public static void saveCardList(String list) {
 
     }
 

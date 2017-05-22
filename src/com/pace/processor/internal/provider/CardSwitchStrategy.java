@@ -3,14 +3,16 @@ package com.pace.processor.internal.provider;
 
 import com.pace.common.ApduHelper;
 import com.pace.processor.APDU;
+import com.pace.processor.bean.CardListQueryBean;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
-import com.pace.processor.internal.base.SwitchCardElement;
 
 public class CardSwitchStrategy implements IApduProviderStrategy {
-    SwitchCardElement mElement = null;
+    CardListQueryBean mElement = null;
+    private boolean mToAct = false;
 
-    public CardSwitchStrategy(SwitchCardElement input) {
+    public CardSwitchStrategy(CardListQueryBean input, boolean toAct) {
         mElement = input;
+        mToAct = toAct;
     }
 
     @Override
@@ -19,8 +21,8 @@ public class CardSwitchStrategy implements IApduProviderStrategy {
             return null;
         }
         // TODO need check!
-        String apdu = mElement.needAct ? ApduHelper.activeAid(mElement.instance_id)
-                : ApduHelper.disactiveAid(mElement.instance_id);
+        String apdu = mToAct ? ApduHelper.activeAid(mElement.getInstance_id())
+                : ApduHelper.disactiveAid(mElement.getInstance_id());
         return new APDU(apdu);
     }
 

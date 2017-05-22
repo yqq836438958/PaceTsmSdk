@@ -2,18 +2,19 @@
 package com.pace.processor.internal.state;
 
 import com.pace.common.RET;
+import com.pace.processor.bean.ParamBean;
 
 public class ProcessContext {
     private Object nextObject;
     private IProcessAction mState = null;
-    private String sInput = "";
+    private ParamBean sInput = null;
     private RET outRet = RET.empty();
 
-    public ProcessContext(String src) {
+    public ProcessContext(ParamBean src) {
         sInput = src;
     }
 
-    public String getSource() {
+    public ParamBean getSource() {
         return sInput;
     }
 

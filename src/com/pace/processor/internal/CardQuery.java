@@ -3,23 +3,25 @@ package com.pace.processor.internal;
 
 import com.pace.plugin.ICardPluginService;
 import com.pace.plugin.PluginManager;
+import com.pace.common.GsonUtil;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
-import com.pace.processor.internal.base.ApduResult;
+import com.pace.processor.bean.CardQueryBean;
+import com.pace.processor.bean.ParamBean;
 import com.pace.processor.internal.base.CardTagElement;
-import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 import com.pace.processor.internal.provider.CardTagQueryStrategy;
+import com.pace.processor.internal.state.ProcessContext;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class CardQuery extends CardBaseBusiness {
-    private ConcurrentLinkedQueue<CardTagElement> mCardTagElements = null;
+public class CardQuery extends CardBaseProcess {
+    private ConcurrentLinkedQueue<String> mCardTagElements = new ConcurrentLinkedQueue<String>();
     private JSONObject mOutPut = null;
+    private String mAid = "";
 
     public CardQuery() {
         // TODO
@@ -27,31 +29,42 @@ public class CardQuery extends CardBaseBusiness {
     }
 
     @Override
-    protected ApduResult onPrepare(String sourceInput) {
-        return nextProvide(null);
+    protected int onPrepare(ProcessContext context) {
+        // {"instance_id":"xxx","tag":"xxx,xx"}
+        ParamBean input = context.getSource();
+        CardQueryBean bean = GsonUtil.parseJsonWithGson(input.getData(), CardQueryBean.class);
+        mAid = bean.getInstance_id();
+        String tmp = bean.getTag();
+        String[] tmps = tmp.split(",");
+        for (String tag : tmps) {
+            mCardTagElements.add(tag);
+        }
+        return 0;
     }
 
     @Override
-    protected ApduResult onApduProvide(Object input) {
-        CardTagElement element = mCardTagElements.peek();
-        APDU apdu = mApduProvider.call(new CardTagQueryStrategy(element));
-        return nextTransmit(apdu);
+    protected int onProvider(ProcessContext context) {
+        String tag = mCardTagElements.peek();
+        APDU apdu = mApduProvider.call(new CardTagQueryStrategy(mAid, tag));
+        context.setParam(apdu);
+        return 0;
     }
 
     @Override
-    protected ApduResult onApduConsume(List<String> apduList) {
-        CardTagElement element = mCardTagElements.poll();
+    protected int onPostHandle(ProcessContext context, List<String> apduList) {
+        String element = mCardTagElements.poll();
         if (element == null) {
-            return nextFinal(RET.suc(mOutPut.toString()));
+            context.setParam(mOutPut.toString());
+            return RET.RET_OVER;
         }
         ICardPluginService service = PluginManager.getInstance().getService();
-        String parseData = service.parseDetailRsp(element.aid, element.tag, apduList);
+        String parseData = service.parseDetailRsp(mAid, element, apduList);
         try {
-            mOutPut.put(element.tag, parseData);
+            mOutPut.put(element, parseData);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return nextProvide(null);
+        return RET.RET_NEXT;
     }
 
 }

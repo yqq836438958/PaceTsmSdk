@@ -4,6 +4,7 @@ package com.pace.event;
 import com.pace.common.RET;
 import com.pace.processor.Dispatcher;
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.bean.ParamBean;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,7 +67,7 @@ public class EventEngineImp implements IEventEngine, Callable<RET> {
     }
 
     @Override
-    public long offer(String msg, IBusinessType type) {
+    public long offer(ParamBean msg, IBusinessType type) {
         long curTime = System.currentTimeMillis();
         mTaskEventSourceQueue.add(new Event(type, msg));
         mFutueMap.put(curTime, mExecutor.submit(this));

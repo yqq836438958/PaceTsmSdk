@@ -19,9 +19,9 @@ public class CardCplc extends CardBaseProcess {
         String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.getCplc() : mCplc;
         if (!TextUtils.isEmpty(cacheCplc)) {
             context.setParam(mCplc);
-            return RET.RET_IGONRE;
+            return RET.RET_OVER;
         }
-        return 0;
+        return RET.RET_NEXT;
     }
 
     @Override
@@ -31,18 +31,14 @@ public class CardCplc extends CardBaseProcess {
             return ErrCode.ERR_NET_APDU_NULL;
         }
         context.setParam(apdu);
-        return 0;
+        return RET.RET_NEXT;
     }
 
     @Override
-    protected int onPostHandle(ProcessContext context) {
-        List<String> apdus = (List<String>) context.getParam();
-        if (apdus == null || apdus.size() <= 0) {
-            return ErrCode.ERR_LOCAL_APDU_NULL;
-        }
-        mCplc = apdus.get(0);
+    protected int onPostHandle(ProcessContext context, List<String> apduList) {
+        mCplc = apduList.get(0);
         TsmCache.saveCplc(mCplc);
-        return 0;
+        return RET.RET_NEXT;
     }
 
 }

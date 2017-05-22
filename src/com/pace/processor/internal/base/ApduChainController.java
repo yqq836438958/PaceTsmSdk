@@ -2,6 +2,7 @@
 package com.pace.processor.internal.base;
 
 import com.pace.common.RET;
+import com.pace.processor.bean.ParamBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ public class ApduChainController {
     private int mSize = 0;
 
     interface IApduChainNode {
-        public RET call(String msg);
+        public RET call(ParamBean msg);
 
         public void next(IApduChainNode node);
     }
@@ -29,7 +30,7 @@ public class ApduChainController {
         }
     }
 
-    public final RET invoke(String msg) {
+    public final RET invoke(ParamBean msg) {
         if (mList.size() <= 0) {
             return RET.err("");
         }
@@ -38,12 +39,12 @@ public class ApduChainController {
 
     public static abstract class ApduChainNode implements IApduChainNode {
 
-        protected abstract RET onCall(String msg);
+        protected abstract RET onCall(ParamBean msg);
 
         private IApduChainNode nextChain = null;
 
         @Override
-        public RET call(String msg) {
+        public RET call(ParamBean msg) {
             RET result = onCall(msg);
             if (RET.isError(result) || nextChain == null) {
                 return result;

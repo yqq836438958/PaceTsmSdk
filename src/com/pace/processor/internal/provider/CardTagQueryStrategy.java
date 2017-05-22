@@ -8,10 +8,12 @@ import com.pace.processor.internal.base.CardTagElement;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 
 public class CardTagQueryStrategy implements IApduProviderStrategy {
-    private CardTagElement mCardTagElement = null;
+    private String mAid = null;
+    private String mTag = null;
 
-    public CardTagQueryStrategy(CardTagElement input) {
-        mCardTagElement = input;
+    public CardTagQueryStrategy(String aid, String tag) {
+        mAid = aid;
+        mTag = tag;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class CardTagQueryStrategy implements IApduProviderStrategy {
             return null;
         }
         return new APDU(
-                service.fetchDetailReq(mCardTagElement.aid, mCardTagElement.tag));
+                service.fetchDetailReq(mAid, mTag));
     }
 
 }

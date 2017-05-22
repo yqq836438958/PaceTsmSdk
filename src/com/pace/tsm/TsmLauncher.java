@@ -5,6 +5,7 @@ import com.pace.common.RET;
 import com.pace.event.EventEngineImp;
 import com.pace.event.IEventEngine;
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.bean.ParamBean;
 
 class TsmLauncher {
 
@@ -24,7 +25,7 @@ class TsmLauncher {
         mTaskEngine = new EventEngineImp();
     }
 
-    public long sendReq(String param, IBusinessType type) {
+    public long sendReq(ParamBean param, IBusinessType type) {
         return mTaskEngine.offer(param, type);
     }
 

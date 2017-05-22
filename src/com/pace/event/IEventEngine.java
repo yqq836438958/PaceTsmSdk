@@ -3,9 +3,10 @@ package com.pace.event;
 
 import com.pace.common.RET;
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.bean.ParamBean;
 
 public interface IEventEngine {
-    public long offer(String msg, IBusinessType type);
+    public long offer(ParamBean msg, IBusinessType type);
 
     public void cancelTask(long reqId);
 

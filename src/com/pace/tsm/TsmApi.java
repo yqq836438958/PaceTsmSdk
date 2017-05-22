@@ -12,9 +12,7 @@ import com.pace.processor.Dispatcher.CardNetBusinessType;
 import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.pace.processor.bean.ParamBean;
 
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
@@ -29,38 +27,38 @@ public class TsmApi {
         sContext = context;
     }
 
+    // {"install_id":"xxxx","token":"xxxxxx","extra_info":"xxxxx"}
     public static int cardIssue(String input, String[] output) {
-        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal());
-        return invokeInteranl(new CardNetBusinessType(), newInput, output);
+        return invokeInteranl(new CardNetBusinessType(),
+                new ParamBean(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal()), output);
     }
 
     public static int cardTopup(String input, String[] output) {
-        String newInput = appendInputSrc(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
-        return invokeInteranl(new CardNetBusinessType(), newInput, output);
+        return invokeInteranl(new CardNetBusinessType(),
+                new ParamBean(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal()), output);
     }
 
     public static int cardListQuery(String[] output) {
-        return invokeInteranl(new CardListQueryType(), "", output);
+        return invokeInteranl(new CardListQueryType(), new ParamBean(""), output);
     }
 
     public static int cardSeInit(String[] output) {
-        String newInput = appendInputSrc("", NET_BUSINESS_TYPE.TYPE_SEINIT.ordinal());
-        return invokeInteranl(new CardNetBusinessType(), newInput, output);
+        return invokeInteranl(new CardNetBusinessType(), new ParamBean(""), output);
     }
 
     public static int cardQuery(String input, String[] output) {
-        return invokeInteranl(new CardQueryType(), input, output);
+        return invokeInteranl(new CardQueryType(), new ParamBean(input), output);
     }
 
     public static int cardSwitch(String aid) {
-        return invokeInteranl(new CardSwitchType(), aid, null);
+        return invokeInteranl(new CardSwitchType(), new ParamBean(aid), null);
     }
 
     public static int cardCplc(String[] output) {
-        return invokeInteranl(new CardCplcType(), "", output);
+        return invokeInteranl(new CardCplcType(), new ParamBean(""), output);
     }
 
-    private static RET invokeCardInnerRet(String input, IBusinessType type) {
+    private static RET invokeCardInnerRet(ParamBean input, IBusinessType type) {
         TsmLauncher launcher = TsmLauncher.get();
         long lreq = launcher.sendReq(input, type);
         RET result = launcher.waitRsp(lreq);
@@ -74,21 +72,9 @@ public class TsmApi {
         return ret.getCode();
     }
 
-    private static int invokeInteranl(IBusinessType type, String input, String[] output) {
+    private static int invokeInteranl(IBusinessType type, ParamBean input, String[] output) {
         RET ret = invokeCardInnerRet(input, type);
         return parseExeResult(ret, output);
     }
 
-    protected static String appendInputSrc(String src, int operateType) {
-        String target = src;
-        try {
-            JSONObject object = new JSONObject(src);
-            object.put("operate", operateType);
-            target = object.toString();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return target;
-    }
 }
