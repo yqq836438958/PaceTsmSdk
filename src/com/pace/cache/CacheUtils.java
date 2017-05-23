@@ -17,15 +17,7 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
 public class CacheUtils {
-    private static String sShareFile = "tsm_cache";
-
-    public static void prepareFile(String fileName) {
-        sShareFile = fileName;
-    }
-
-    public static void cleanFile() {
-        sShareFile = "";
-    }
+    public static String sShareFile = "tsm_cache";
 
     public static void save(String key, String val) {
         Editor editor = getSharePref().edit();

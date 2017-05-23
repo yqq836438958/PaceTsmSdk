@@ -9,4 +9,7 @@ public class ErrCode {
     public static final int ERR_RSP_APDU_FAIL = -5;
 
     public static final int ERR_CARDLIST_NULL = 10001; // 列表为空
+    // 设备端错误
+    public static final int ERR_APDU_REQ_TIMEOUT = -6;
+    public static final int ERR_THREAD_ERR = -7;
 }

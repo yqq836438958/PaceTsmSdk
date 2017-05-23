@@ -18,7 +18,7 @@ public class ListStrategy implements IApduProviderStrategy {
     @Override
     public APDU provide() {
         if (!TextUtils.isEmpty(mAidCRS)) {
-            return new APDU(ApduHelper.lsCRS(mAidCRS));
+            return new APDU(ApduHelper.getCRSAppStat(mAidCRS));
         }
 
         // 解析出来，放到数据里面去GetTsmApdu去填充

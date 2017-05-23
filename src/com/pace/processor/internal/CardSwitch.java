@@ -24,7 +24,7 @@ public class CardSwitch extends CardBaseProcess {
     protected int onPrepare(ProcessContext context) {
         ParamBean bean = context.getSource();
         mTargetOperateAid = bean.getData();
-        mCardListBeans = GsonUtil.parseJsonArrayWithGson(TsmCache.getCardList(),
+        mCardListBeans = GsonUtil.parseJsonArrayWithGson(TsmCache.get().getCardList(),
                 CardListQueryBean.class);
         if (mCardListBeans == null || mCardListBeans.size() <= 0) {
             return ErrCode.ERR_CARDLIST_NULL;
@@ -74,7 +74,7 @@ public class CardSwitch extends CardBaseProcess {
         int preStatus = targetBean.getActivite_status();
         targetBean.setActivte_status(preStatus == CardListQueryBean.ACT_FALSE
                 ? CardListQueryBean.ACT_TRUE : CardListQueryBean.ACT_FALSE);
-        TsmCache.saveCardList(new Gson().toJson(mCardListBeans));
+        TsmCache.get().saveCardList(new Gson().toJson(mCardListBeans));
         if (mCardListIndex == mCardListBeans.size() - 1) {
             return RET.RET_OVER;
         }

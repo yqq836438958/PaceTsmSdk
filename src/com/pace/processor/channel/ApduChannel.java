@@ -2,6 +2,7 @@
 package com.pace.processor.channel;
 
 import com.pace.api.IApduChannel;
+import com.pace.common.ErrCode;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -31,7 +32,8 @@ public class ApduChannel {
 
     }
 
-    public final List<String> transmit(final List<String> apdus) {
+    public final int transmit(final List<String> input, final List<String> output) {
+        int iRet = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         List<String> target = null;
         FutureTask<List<String>> transmitTask = new FutureTask<List<String>>(
@@ -42,22 +44,29 @@ public class ApduChannel {
                         if (!openChannel()) {
                             return null;
                         }
-                        return mChannel.transmit(apdus);
+                        return mChannel.transmit(input);
                     }
                 });
         executor.submit(transmitTask);
         try {
             target = transmitTask.get(5000, TimeUnit.MILLISECONDS); // 取得结果，同时设置超时执行时间为5秒。同样可以用future.get()，不设置执行超时时间取得结果
+            if (output != null) {
+                output.clear();
+                output.addAll(target);
+            }
         } catch (InterruptedException e) {
+            iRet = ErrCode.ERR_THREAD_ERR;
             transmitTask.cancel(true);
         } catch (ExecutionException e) {
+            iRet = ErrCode.ERR_THREAD_ERR;
             transmitTask.cancel(true);
         } catch (TimeoutException e) {
+            iRet = ErrCode.ERR_APDU_REQ_TIMEOUT;
             transmitTask.cancel(true);
         } finally {
             executor.shutdown();
         }
-        return target;
+        return iRet;
     }
 
     private boolean openChannel() {

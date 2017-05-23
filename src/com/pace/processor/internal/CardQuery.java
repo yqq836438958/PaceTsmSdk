@@ -3,23 +3,27 @@ package com.pace.processor.internal;
 
 import com.pace.plugin.ICardPluginService;
 import com.pace.plugin.PluginManager;
+
+import android.text.TextUtils;
+
 import com.pace.common.GsonUtil;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.bean.CardQueryBean;
 import com.pace.processor.bean.ParamBean;
-import com.pace.processor.internal.base.CardTagElement;
 import com.pace.processor.internal.provider.CardTagQueryStrategy;
 import com.pace.processor.internal.state.ProcessContext;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardQuery extends CardBaseProcess {
-    private ConcurrentLinkedQueue<String> mCardTagElements = new ConcurrentLinkedQueue<String>();
+    private List<String> mTagList = null;
+    private int mTagIndex = -1;
     private JSONObject mOutPut = null;
     private String mAid = "";
 
@@ -35,16 +39,34 @@ public class CardQuery extends CardBaseProcess {
         CardQueryBean bean = GsonUtil.parseJsonWithGson(input.getData(), CardQueryBean.class);
         mAid = bean.getInstance_id();
         String tmp = bean.getTag();
+        if (TextUtils.isEmpty(tmp)) {
+            initNoFilterTagList();
+            return 0;
+        }
         String[] tmps = tmp.split(",");
+        if (tmps == null || tmps.length <= 0) {
+            initNoFilterTagList();
+            return 0;
+        }
+        mTagList = new ArrayList<String>();
         for (String tag : tmps) {
-            mCardTagElements.add(tag);
+            mTagList.add(tag);
         }
         return 0;
     }
 
+    private void initNoFilterTagList() {
+        mTagList = Arrays.asList("amount", "card_num", "date");
+    }
+
     @Override
     protected int onProvider(ProcessContext context) {
-        String tag = mCardTagElements.peek();
+        mTagIndex++;
+        if (mTagIndex >= mTagList.size()) {
+            context.setOutPut(mOutPut.toString());
+            return RET.RET_OVER;
+        }
+        String tag = mTagList.get(mTagIndex);
         APDU apdu = mApduProvider.call(new CardTagQueryStrategy(mAid, tag));
         context.setParam(apdu);
         return 0;
@@ -52,17 +74,17 @@ public class CardQuery extends CardBaseProcess {
 
     @Override
     protected int onPostHandle(ProcessContext context, List<String> apduList) {
-        String element = mCardTagElements.poll();
-        if (element == null) {
-            context.setParam(mOutPut.toString());
-            return RET.RET_OVER;
-        }
+        String tag = mTagList.get(mTagIndex);
         ICardPluginService service = PluginManager.getInstance().getService();
-        String parseData = service.parseDetailRsp(mAid, element, apduList);
+        String parseData = service.parseDetailRsp(mAid, tag, apduList);
         try {
-            mOutPut.put(element, parseData);
+            mOutPut.put(mAid, parseData);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if (mTagIndex == mTagList.size() - 1) {
+            context.setOutPut(mOutPut.toString());
+            return RET.RET_OVER;
         }
         return RET.RET_NEXT;
     }

@@ -29,10 +29,17 @@ public class CardPluginServiceProxy implements ICardPluginService {
         try {
             service = (ICardPluginService) classLoader.loadClass(CLASS_TARGET_SERVICE)
                     .newInstance();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         if (service != null) {
             mService = service;
             return true;
@@ -102,6 +109,12 @@ public class CardPluginServiceProxy implements ICardPluginService {
             return null;
         }
         return mService.parseDetailRsp(aid, tag, rsp);
+    }
+
+    @Override
+    public List<String> getSupportAidList() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

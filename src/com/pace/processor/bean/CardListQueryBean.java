@@ -11,6 +11,16 @@ public class CardListQueryBean {
     private int install_status;
     private int activite_status;
 
+    public CardListQueryBean() {
+
+    }
+
+    public CardListQueryBean(String aid, int install_stat, int act_stat) {
+        this.instance_id = aid;
+        this.install_status = install_stat;
+        this.activite_status = act_stat;
+    }
+
     public void setInstance_id(String aid) {
         this.instance_id = aid;
     }

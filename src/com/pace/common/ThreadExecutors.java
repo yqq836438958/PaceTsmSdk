@@ -62,7 +62,7 @@ public class ThreadExecutors {
      */
     private static class ImmediateExecutor implements Executor {
         private static final int MAX_DEPTH = 15;
-        private ThreadLocal<Integer> executionDepth = new ThreadLocal<>();
+        private ThreadLocal<Integer> executionDepth = new ThreadLocal<Integer>();
 
         /**
          * Increments the depth.

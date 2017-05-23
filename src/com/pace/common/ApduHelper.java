@@ -16,8 +16,12 @@ public class ApduHelper {
                 .replace("(aid)", aid);
     }
 
-    public static String lsCRS(String aid) {
-        return wrapApduTemplete(ApduConstants.AID_CRS, aid);
+    public static String listCRSApp() {
+        return getCRSAppStat("00");
+    }
+
+    public static String getCRSAppStat(String aid) {
+        return wrapApduTemplete(ApduConstants.APDU_LIST_STATE, aid);
     }
 
     public static String activeAid(String aid) {
@@ -33,6 +37,13 @@ public class ApduHelper {
         return false;
     }
 
+    public static boolean isAidExisit(String apdu, String aid) {
+        if (TextUtils.isEmpty(apdu) || TextUtils.isEmpty(aid)) {
+            return false;
+        }
+        return apdu.contains(aid);
+    }
+
     public static int isAppActived(String apdu, String aid) {
         if (TextUtils.isEmpty(apdu) || TextUtils.isEmpty(aid)) {
             return -1;
@@ -44,4 +55,5 @@ public class ApduHelper {
         byte result = bsApdu[offset];
         return (int) result;
     }
+    // public static boolea
 }

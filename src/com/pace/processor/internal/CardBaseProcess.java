@@ -11,6 +11,7 @@ import com.pace.processor.internal.base.ApduChainController.ApduChainNode;
 import com.pace.processor.internal.state.IProcessAction;
 import com.pace.processor.internal.state.ProcessContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CardBaseProcess extends ApduChainNode {
@@ -64,13 +65,15 @@ public abstract class CardBaseProcess extends ApduChainNode {
 
         @Override
         public int onCall(ProcessContext context) {
+            ApduChannel.get().close();
             return context.getOutPut().getCode();
         }
     };
 
     private int next(int ret, ProcessContext context, IProcessAction newAction) {
         context.setCode(ret);
-        IProcessAction realAction = (ret == 0 ? newAction : mFinalAction);
+        IProcessAction realAction = (ret == RET.RET_NEXT ? newAction
+                : (ret == RET.RET_REFRESH ? mProviderAction : mFinalAction));
         context.setAction(realAction);
         return realAction.onCall(context);
     }
@@ -86,7 +89,11 @@ public abstract class CardBaseProcess extends ApduChainNode {
             if (source == null || source.size() <= 0) {
                 return ErrCode.ERR_LOCAL_APDU_NULL;
             }
-            List<String> rsp = ApduChannel.get().transmit(source);
+            List<String> rsp = new ArrayList<String>();
+            int ret = ApduChannel.get().transmit(source, rsp);
+            if (ret != 0) {
+                return ret;
+            }
             if (rsp == null || rsp.size() <= 0) {
                 return ErrCode.ERR_RSP_APDU_NULL;
             }
