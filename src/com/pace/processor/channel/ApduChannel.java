@@ -28,6 +28,10 @@ public class ApduChannel {
         return sInstance;
     }
 
+    public void setChannel(IApduChannel channel) {
+        mChannel = channel;
+    }
+
     private ApduChannel() {
 
     }

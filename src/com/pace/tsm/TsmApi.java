@@ -13,6 +13,7 @@ import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
 import com.pace.processor.bean.ParamBean;
+import com.pace.processor.channel.ApduChannel;
 
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
@@ -25,9 +26,9 @@ public class TsmApi {
 
     public static void regist(Context context, IApduChannel apduChannel) {
         sContext = context;
+        ApduChannel.get().setChannel(apduChannel);
     }
 
-    // {"install_id":"xxxx","token":"xxxxxx","extra_info":"xxxxx"}
     public static int cardIssue(String input, String[] output) {
         return invokeInteranl(new CardNetBusinessType(),
                 new ParamBean(input, NET_BUSINESS_TYPE.TYPE_ISSUECARD.ordinal()), output);
