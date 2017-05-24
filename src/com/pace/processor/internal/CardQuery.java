@@ -6,8 +6,10 @@ import com.pace.plugin.PluginManager;
 
 import android.text.TextUtils;
 
+import com.pace.cardquery.Constants;
 import com.pace.common.GsonUtil;
 import com.pace.common.RET;
+import com.pace.constants.CommonConstants;
 import com.pace.processor.APDU;
 import com.pace.processor.bean.CardQueryBean;
 import com.pace.processor.bean.ParamBean;
@@ -63,7 +65,7 @@ public class CardQuery extends CardBaseProcess {
     protected int onProvider(ProcessContext context) {
         mTagIndex++;
         if (mTagIndex >= mTagList.size()) {
-            context.setOutPut(mOutPut.toString());
+            genOutput(context);
             return RET.RET_OVER;
         }
         String tag = mTagList.get(mTagIndex);
@@ -78,15 +80,24 @@ public class CardQuery extends CardBaseProcess {
         ICardPluginService service = PluginManager.getInstance().getService();
         String parseData = service.parseDetailRsp(mAid, tag, apduList);
         try {
-            mOutPut.put(mAid, parseData);
+            mOutPut.put(tag, parseData);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if (mTagIndex == mTagList.size() - 1) {
-            context.setOutPut(mOutPut.toString());
+            genOutput(context);
             return RET.RET_OVER;
         }
         return RET.RET_NEXT;
     }
 
+    private void genOutput(ProcessContext context) {
+        try {
+            mOutPut.put(CommonConstants.INSTANCE_ID, mAid);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        context.setOutPut(mOutPut.toString());
+    }
 }

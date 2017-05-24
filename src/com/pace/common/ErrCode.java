@@ -12,4 +12,5 @@ public class ErrCode {
     // 设备端错误
     public static final int ERR_APDU_REQ_TIMEOUT = -6;
     public static final int ERR_THREAD_ERR = -7;
+    public static final int ERR_UNKOWN_ERR = -8;
 }

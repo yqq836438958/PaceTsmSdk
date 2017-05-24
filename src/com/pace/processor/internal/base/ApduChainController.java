@@ -15,6 +15,8 @@ public class ApduChainController {
         public RET call(ParamBean msg);
 
         public void next(IApduChainNode node);
+
+        public void onFinish();
     }
 
     public void add(IApduChainNode chain) {
@@ -47,6 +49,7 @@ public class ApduChainController {
         public RET call(ParamBean msg) {
             RET result = onCall(msg);
             if (RET.isError(result) || nextChain == null) {
+                onFinish();
                 return result;
             }
             return nextChain.call(msg);

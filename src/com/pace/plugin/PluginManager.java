@@ -16,6 +16,10 @@ public class PluginManager {
         return sInstance;
     }
 
+    private PluginManager() {
+        mService = new CardPluginService();
+    }
+
     public ICardPluginService getService() {
         return mService;
     }

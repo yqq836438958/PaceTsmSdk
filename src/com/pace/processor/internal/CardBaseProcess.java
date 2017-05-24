@@ -17,6 +17,17 @@ import java.util.List;
 public abstract class CardBaseProcess extends ApduChainNode {
     protected IApduProvider mApduProvider = null;
 
+    public CardBaseProcess() {
+        mApduProvider = new IApduProvider() {
+
+            @Override
+            public APDU call(IApduProviderStrategy strategy) {
+                return strategy.provide();
+            }
+
+        };
+    }
+
     @Override
     protected RET onCall(ParamBean msg) {
         ProcessContext context = new ProcessContext(msg);
@@ -65,7 +76,6 @@ public abstract class CardBaseProcess extends ApduChainNode {
 
         @Override
         public int onCall(ProcessContext context) {
-            ApduChannel.get().close();
             return context.getOutPut().getCode();
         }
     };
@@ -97,8 +107,15 @@ public abstract class CardBaseProcess extends ApduChainNode {
             if (rsp == null || rsp.size() <= 0) {
                 return ErrCode.ERR_RSP_APDU_NULL;
             }
+            context.setParam(rsp);
+            return 0;
         }
-        return ErrCode.ERR_LOCAL_APDU_NULL;
+        return ErrCode.ERR_UNKOWN_ERR;
+    }
+
+    @Override
+    public void onFinish() {
+        ApduChannel.get().close();
     }
 
     protected abstract int onPostHandle(ProcessContext context, List<String> apduList);

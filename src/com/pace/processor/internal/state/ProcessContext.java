@@ -8,10 +8,11 @@ public class ProcessContext {
     private Object nextObject;
     private IProcessAction mState = null;
     private ParamBean sInput = null;
-    private RET outRet = RET.empty();
+    private RET outRet = null;
 
     public ProcessContext(ParamBean src) {
         sInput = src;
+        outRet = RET.empty();
     }
 
     public ParamBean getSource() {

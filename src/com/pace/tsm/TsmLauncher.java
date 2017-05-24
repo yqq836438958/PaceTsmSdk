@@ -14,7 +14,7 @@ class TsmLauncher {
 
     public static TsmLauncher get() {
         if (sInstance == null) {
-            synchronized (sInstance) {
+            synchronized (TsmLauncher.class) {
                 sInstance = new TsmLauncher();
             }
         }
