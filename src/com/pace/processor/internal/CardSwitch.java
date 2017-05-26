@@ -2,6 +2,7 @@
 package com.pace.processor.internal;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pace.cache.TsmCache;
 import com.pace.common.ApduHelper;
 import com.pace.common.ErrCode;
@@ -24,8 +25,11 @@ public class CardSwitch extends CardBaseProcess {
     protected int onPrepare(ProcessContext context) {
         ParamBean bean = context.getSource();
         mTargetOperateAid = bean.getData();
-        mCardListBeans = GsonUtil.parseJsonArrayWithGson(TsmCache.get().getCardList(),
-                CardListQueryBean.class);
+        //
+        mCardListBeans = getDataFromCache(TsmCache.get().getCardList());
+        // mCardListBeans = GsonUtil.<CardListQueryBean> parseJsonArrayWithGson(
+        // TsmCache.get().getCardList(),
+        // CardListQueryBean.class);
         if (mCardListBeans == null || mCardListBeans.size() <= 0) {
             return ErrCode.ERR_CARDLIST_NULL;
         }
@@ -34,6 +38,12 @@ public class CardSwitch extends CardBaseProcess {
         }
         // TODO 重新排序列表
         return RET.RET_NEXT;
+    }
+
+    private List<CardListQueryBean> getDataFromCache(String cache) {
+        Gson gson = new Gson();
+        return gson.fromJson(cache, new TypeToken<List<CardListQueryBean>>() {
+        }.getType());
     }
 
     private boolean isTargetAidActivited() {

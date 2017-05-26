@@ -78,9 +78,9 @@ public class ApduChannel {
             return true;
         }
         if (mChannel != null) {
-            return mChannel.open();
+            isChannelOpen = mChannel.open();
         }
-        return false;
+        return isChannelOpen;
     }
 
     public final void close() {

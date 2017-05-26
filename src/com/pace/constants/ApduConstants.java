@@ -8,4 +8,5 @@ public class ApduConstants {
     public static final String APDU_ACTIVE_APP = "80F00101#4F@(aid)";
     public static final String APDU_DISACTIVE_APP = "80F00100#4F@(aid)";
     public static final String APDU_LIST_STATE = "80F24000#4F@(aid)";
+    public static final String APDU_SELECT_AID = "00A40400#(aid)00";
 }

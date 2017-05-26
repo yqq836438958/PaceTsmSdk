@@ -16,8 +16,21 @@ public class ApduHelper {
                 .replace("(aid)", aid);
     }
 
-    public static String listCRSApp() {
-        return getCRSAppStat("00");
+    // public static String listCRSApp() {
+    // return getCRSAppStat("00");
+    // }
+
+    public static String selectAid(String targetAid) {
+        int aidLen = targetAid.length() / 2;
+        String aidSegment = ByteUtil.toHex(aidLen);
+        String tmplete = ApduConstants.APDU_SELECT_AID;
+        return tmplete.replace("#", aidSegment).replace("(aid)", targetAid);
+    }
+
+    public static String listCRSApp(int p2) {
+        String word = new StringBuilder("0").append(p2).append("#").toString();
+        String src = (ApduConstants.APDU_LIST_STATE).replace("00#", word);
+        return wrapApduTemplete(src, "00");
     }
 
     public static String getCRSAppStat(String aid) {

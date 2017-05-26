@@ -117,4 +117,10 @@ public class CardPluginServiceProxy implements ICardPluginService {
         return null;
     }
 
+    @Override
+    public List<String> getTagListByAid(String aid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

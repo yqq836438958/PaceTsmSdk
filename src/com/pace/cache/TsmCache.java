@@ -36,8 +36,10 @@ public class TsmCache {
 
     private String getSimpleCplc() {
         String cplc = getCplc();
-        String simpleCplc = cplc.substring(24, 36);
-        return simpleCplc;
+        if (cplc != null && cplc.length() > 37) {
+            return cplc.substring(24, 36);
+        }
+        return "null";
     }
 
     public void saveCardList(String list) {
