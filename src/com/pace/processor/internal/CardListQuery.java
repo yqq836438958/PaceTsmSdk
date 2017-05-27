@@ -38,9 +38,12 @@ public class CardListQuery extends CardBaseProcess {
     // TODO 本地访问需要自己去判断！！
     @Override
     protected int onPrepare(ProcessContext context) {
+        if (mIsLocalInvoke) {
+            return RET.RET_NEXT;
+        }
         String list = TsmCache.get().getCardList();
         if (!TextUtils.isEmpty(list)) {
-            context.setParam(list);
+            context.setOutPut(list);
             return RET.RET_OVER;
         }
         return RET.RET_NEXT;

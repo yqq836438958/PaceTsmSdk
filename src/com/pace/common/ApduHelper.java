@@ -54,7 +54,7 @@ public class ApduHelper {
         if (TextUtils.isEmpty(apdu) || TextUtils.isEmpty(aid)) {
             return false;
         }
-        return apdu.contains(aid);
+        return apdu.toLowerCase().contains(aid.toLowerCase());
     }
 
     public static int isAppActived(String apdu, String aid) {
