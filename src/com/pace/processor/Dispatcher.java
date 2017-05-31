@@ -10,6 +10,7 @@ import com.pace.processor.internal.CardListQuery;
 import com.pace.processor.internal.CardNetBusiness;
 import com.pace.processor.internal.CardQuery;
 import com.pace.processor.internal.CardSwitch;
+import com.pace.processor.internal.CardTransaction;
 import com.pace.processor.internal.base.ApduChainController;
 
 public class Dispatcher {
@@ -92,4 +93,14 @@ public class Dispatcher {
         }
     }
 
+    public static class CardTransactionType implements IBusinessType {
+
+        @Override
+        public RET call(ParamBean msg) {
+            ApduChainController controller = new ApduChainController();
+            controller.add(new CardTransaction());
+            return controller.invoke(msg);
+        }
+
+    }
 }

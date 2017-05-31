@@ -3,6 +3,9 @@ package com.pace.plugin;
 
 import android.content.Context;
 
+import com.pace.tsm.plugin.ICardPluginService;
+import com.pace.tsm.plugin.bean.CardTransactionBean;
+
 import dalvik.system.DexClassLoader;
 
 import java.io.BufferedInputStream;
@@ -119,6 +122,18 @@ public class CardPluginServiceProxy implements ICardPluginService {
 
     @Override
     public List<String> getTagListByAid(String aid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> fetchTransactionReq(String aid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<CardTransactionBean> parseTransactionRsp(String aid, List<String> rsp) {
         // TODO Auto-generated method stub
         return null;
     }

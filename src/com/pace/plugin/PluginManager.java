@@ -1,6 +1,9 @@
 
 package com.pace.plugin;
 
+import com.pace.tsm.plugin.CardPluginService;
+import com.pace.tsm.plugin.ICardPluginService;
+
 public class PluginManager {
     private static volatile PluginManager sInstance = null;
     private ICardPluginService mService = null;

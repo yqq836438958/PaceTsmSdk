@@ -12,6 +12,7 @@ import com.pace.processor.Dispatcher.CardNetBusinessType;
 import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.IBusinessType;
+import com.pace.processor.Dispatcher.CardTransactionType;
 import com.pace.processor.bean.ParamBean;
 import com.pace.processor.channel.ApduChannel;
 
@@ -57,6 +58,10 @@ public class TsmApi {
 
     public static int cardCplc(String[] output) {
         return invokeInteranl(new CardCplcType(), new ParamBean(""), output);
+    }
+
+    public static int cardTransaction(String input, String[] output) {
+        return invokeInteranl(new CardTransactionType(), new ParamBean(input), output);
     }
 
     private static RET invokeCardInnerRet(ParamBean input, IBusinessType type) {
