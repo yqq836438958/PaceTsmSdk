@@ -1,9 +1,13 @@
 
 package com.pace.processor.channel;
 
+import android.content.Context;
+
 import com.pace.api.IApduChannel;
+import com.pace.common.ByteUtil;
 import com.pace.common.ErrCode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +32,10 @@ public class ApduChannel {
         return sInstance;
     }
 
-    public void setChannel(IApduChannel channel) {
+    public void setChannel(Context context, IApduChannel channel) {
+        if (channel == null) {
+            channel = new DefaultChannel(context);
+        }
         mChannel = channel;
     }
 
@@ -48,7 +55,7 @@ public class ApduChannel {
                         if (!openChannel()) {
                             return null;
                         }
-                        return mChannel.transmit(input);
+                        return transmitApduInternal(input);
                     }
                 });
         executor.submit(transmitTask);
@@ -71,6 +78,18 @@ public class ApduChannel {
             executor.shutdown();
         }
         return iRet;
+    }
+
+    private List<String> transmitApduInternal(List<String> input) {
+        List<String> rsp = new ArrayList<String>();
+        byte[] apduSrc = null;
+        byte[] apduRsp = null;
+        for (String cmd : input) {
+            apduSrc = ByteUtil.toByteArray(cmd);
+            apduRsp = mChannel.transmit(apduSrc);
+            rsp.add(ByteUtil.toHexString(apduRsp));
+        }
+        return rsp;
     }
 
     private boolean openChannel() {

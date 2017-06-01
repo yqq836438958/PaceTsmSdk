@@ -9,6 +9,7 @@ import com.pace.processor.Dispatcher.CardListQueryType;
 import com.pace.processor.Dispatcher.CardNetBusinessType;
 import com.pace.processor.Dispatcher.CardQueryType;
 import com.pace.processor.Dispatcher.CardSwitchType;
+import com.pace.processor.Dispatcher.CardTransactionType;
 import com.pace.processor.Dispatcher.IBusinessType;
 import com.pace.processor.bean.ParamBean;
 
@@ -44,6 +45,11 @@ public class TsmApiAsync extends TsmApi {
 
     public static void cardTopup(String input, ITsmApiCallback callback) {
         ParamBean newInput = new ParamBean(input, NET_BUSINESS_TYPE.TYPE_TOPUP.ordinal());
+        invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
+    }
+
+    public static void cardTransaction(String input, ITsmApiCallback callback) {
+        ParamBean newInput = new ParamBean(input);
         invokeBusinessInternal(newInput, new CardNetBusinessType(), callback);
     }
 

@@ -22,6 +22,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.pace.tsm.service.TsmSdkService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.pace.tsm.sync" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.pace.tsm.service.TsmSdkAsyncService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.pace.tsm.async" />
+            </intent-filter>
+        </service>
+        <receiver android:name="com.pace.tsm.receiver.TransactionNotice" >
+            <intent-filter>
+                <action android:name="com.nxp.action.TRANSACTION_DETECTED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

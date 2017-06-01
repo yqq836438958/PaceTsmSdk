@@ -27,7 +27,7 @@ public class TsmApi {
 
     public static void regist(Context context, IApduChannel apduChannel) {
         sContext = context;
-        ApduChannel.get().setChannel(apduChannel);
+        ApduChannel.get().setChannel(context, apduChannel);
     }
 
     public static int cardIssue(String input, String[] output) {
