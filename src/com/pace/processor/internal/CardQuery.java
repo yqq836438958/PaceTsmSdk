@@ -5,7 +5,6 @@ import com.pace.plugin.PluginManager;
 
 import android.text.TextUtils;
 
-import com.pace.common.GsonUtil;
 import com.pace.common.RET;
 import com.pace.constants.CommonConstants;
 import com.pace.processor.APDU;
@@ -14,6 +13,7 @@ import com.pace.processor.bean.ParamBean;
 import com.pace.processor.internal.provider.CardTagQueryStrategy;
 import com.pace.processor.internal.state.ProcessContext;
 import com.pace.tsm.plugin.ICardPluginService;
+import com.pace.tsm.utils.GsonUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;

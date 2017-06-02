@@ -12,7 +12,7 @@ import com.pace.processor.bean.CardListQueryBean;
 import com.pace.processor.internal.provider.ListStrategy;
 import com.pace.processor.internal.state.ProcessContext;
 import com.pace.tsm.plugin.ICardPluginService;
-import com.pace.util.TextUtils;
+import com.pace.tsm.utils.ValueUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class CardListQuery extends CardBaseProcess {
 
     public CardListQuery(String crsAid) {
         mCRSAid = crsAid;
-        mIsLocalInvoke = !TextUtils.isEmpty(mCRSAid);
+        mIsLocalInvoke = !ValueUtil.isEmpty(mCRSAid);
     }
 
     public CardListQuery() {
@@ -42,7 +42,7 @@ public class CardListQuery extends CardBaseProcess {
             return RET.RET_NEXT;
         }
         String list = TsmCache.get().getCardList();
-        if (!TextUtils.isEmpty(list)) {
+        if (!ValueUtil.isEmpty(list)) {
             context.setOutPut(list);
             return RET.RET_OVER;
         }

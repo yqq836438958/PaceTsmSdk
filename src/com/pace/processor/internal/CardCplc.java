@@ -7,7 +7,7 @@ import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.internal.provider.CplcStrategy;
 import com.pace.processor.internal.state.ProcessContext;
-import com.pace.util.TextUtils;
+import com.pace.tsm.utils.ValueUtil;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class CardCplc extends CardBaseProcess {
 
     @Override
     protected int onPrepare(ProcessContext context) {
-        String cacheCplc = TextUtils.isEmpty(mCplc) ? TsmCache.get().getCplc() : mCplc;
-        if (!TextUtils.isEmpty(cacheCplc)) {
+        String cacheCplc = ValueUtil.isEmpty(mCplc) ? TsmCache.get().getCplc() : mCplc;
+        if (!ValueUtil.isEmpty(cacheCplc)) {
             context.setOutPut(cacheCplc);
             return RET.RET_OVER;
         }

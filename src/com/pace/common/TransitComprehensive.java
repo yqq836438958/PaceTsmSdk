@@ -1,8 +1,8 @@
 
 package com.pace.common;
 
-import com.pace.tsm.plugin.utils.LogUtil;
-import com.pace.tsm.plugin.utils.ValueUtil;
+import com.pace.tsm.utils.LogUtil;
+import com.pace.tsm.utils.ValueUtil;
 
 public class TransitComprehensive {
     private static String TAG = "TransitComprehensive";

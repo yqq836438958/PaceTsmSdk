@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import com.pace.cache.TsmCache;
 import com.pace.common.ApduHelper;
 import com.pace.common.ErrCode;
-import com.pace.common.GsonUtil;
 import com.pace.common.RET;
 import com.pace.processor.APDU;
 import com.pace.processor.bean.CardListQueryBean;

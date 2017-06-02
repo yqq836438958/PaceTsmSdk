@@ -6,7 +6,7 @@ import com.pace.processor.APDU;
 import com.pace.processor.internal.base.IApduProvider.IApduProviderStrategy;
 import com.pace.tosservice.GetTsmApdu;
 import com.pace.tosservice.TsmTosService;
-import com.pace.util.TextUtils;
+import com.pace.tsm.utils.ValueUtil;
 
 public class ListStrategy implements IApduProviderStrategy {
     private String mAidCRS;
@@ -17,7 +17,7 @@ public class ListStrategy implements IApduProviderStrategy {
 
     @Override
     public APDU provide() {
-        if (!TextUtils.isEmpty(mAidCRS)) {
+        if (!ValueUtil.isEmpty(mAidCRS)) {
             return new APDU(ApduHelper.getCRSAppStat(mAidCRS));
         }
 

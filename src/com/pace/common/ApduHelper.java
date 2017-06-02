@@ -4,6 +4,7 @@ package com.pace.common;
 import android.text.TextUtils;
 
 import com.pace.constants.ApduConstants;
+import com.pace.tsm.utils.ByteUtil;
 
 import java.util.List;
 

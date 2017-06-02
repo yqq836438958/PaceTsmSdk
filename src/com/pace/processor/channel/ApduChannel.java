@@ -4,8 +4,8 @@ package com.pace.processor.channel;
 import android.content.Context;
 
 import com.pace.api.IApduChannel;
-import com.pace.common.ByteUtil;
 import com.pace.common.ErrCode;
+import com.pace.tsm.utils.ByteUtil;
 
 import java.util.ArrayList;
 import java.util.List;

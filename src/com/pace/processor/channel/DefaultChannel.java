@@ -4,8 +4,8 @@ package com.pace.processor.channel;
 import android.content.Context;
 
 import com.pace.api.IApduChannel;
-import com.pace.common.ByteUtil;
 import com.pace.tsm.se.OMAChannel;
+import com.pace.tsm.utils.ByteUtil;
 
 public class DefaultChannel implements IApduChannel {
     private OMAChannel mOmaChannel = null;

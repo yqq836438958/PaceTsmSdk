@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 
-import com.pace.common.ByteUtil;
 import com.pace.tsm.TsmApi;
+import com.pace.tsm.utils.ByteUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

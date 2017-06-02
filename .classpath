@@ -4,9 +4,10 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="libs/qrom_component_wup.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/wup-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="libs/org.simalliance.openmobileapi.jar"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.2.jar"/>
-	<classpathentry kind="lib" path="libs/qrom_component_wup.jar"/>
-	<classpathentry kind="lib" path="libs/wup-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
