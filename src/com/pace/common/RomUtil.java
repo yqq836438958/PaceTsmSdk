@@ -8,7 +8,7 @@ import android.util.Log;
 import com.pace.qrom.WupMgr;
 import com.pace.tsm.TsmApp;
 import com.pace.tsm.utils.QubeStringUtil;
-
+import qrom.component.statistic.QStatExecutor;
 import TRom.RomBaseInfo;
 import qrom.component.wup.QRomQuaFactory;
 import qrom.component.wup.QRomWupDataBuilder;
@@ -20,6 +20,15 @@ public class RomUtil {
     public static String DEFAULT_IMEI = "012345678901234";
     private static final String LC = "35661E4122F8564";
     private static String g_strImei = null;
+
+    public static RomBaseInfo getWatchBaseInfo() {
+        RomBaseInfo watchRomBaseInfo = new RomBaseInfo();
+        watchRomBaseInfo.setSIMEI(""); // TODO DEVID
+        watchRomBaseInfo.setSLC(""); // TODO LCID
+        watchRomBaseInfo.setSQUA(""); // TODO QUA
+        watchRomBaseInfo.setVGUID(new byte[0]);
+        return watchRomBaseInfo;
+    }
 
     public static RomBaseInfo getRomBaseInfo() {
         String strGuid = WupMgr.getInstance().getGUIDStr();
