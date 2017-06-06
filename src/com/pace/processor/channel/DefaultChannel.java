@@ -2,12 +2,13 @@
 package com.pace.processor.channel;
 
 import android.content.Context;
+import android.os.RemoteException;
 
-import com.pace.api.IApduChannel;
 import com.pace.tsm.se.OMAChannel;
+import com.pace.tsm.service.IPaceApduChannel;
 import com.pace.tsm.utils.ByteUtil;
 
-public class DefaultChannel implements IApduChannel {
+public class DefaultChannel extends IPaceApduChannel.Stub {
     private OMAChannel mOmaChannel = null;
 
     public DefaultChannel(Context context) {
@@ -15,12 +16,12 @@ public class DefaultChannel implements IApduChannel {
     }
 
     @Override
-    public byte[] transmit(byte[] apdu) {
-        return mOmaChannel.transmit(apdu);
+    public byte[] transmit(byte[] apdus) throws RemoteException {
+        return mOmaChannel.transmit(apdus);
     }
 
     @Override
-    public boolean open() {
+    public boolean open() throws RemoteException {
         byte[] rsp = mOmaChannel.selectAid(null);
         if (rsp != null && ByteUtil.toHexString(rsp).endsWith("9000")) {
             return true;
@@ -29,7 +30,7 @@ public class DefaultChannel implements IApduChannel {
     }
 
     @Override
-    public void close() {
+    public void close() throws RemoteException {
         mOmaChannel.close();
     }
 

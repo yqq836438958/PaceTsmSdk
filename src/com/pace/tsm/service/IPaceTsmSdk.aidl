@@ -1,7 +1,8 @@
 package com.pace.tsm.service;
+import com.pace.tsm.service.IPaceApduChannel;
 
 interface IPaceTsmSdk {
-
+	void regist(IPaceApduChannel channel);
 	/**
 	* 获取卡列表
 	* @param outputParam 用于接收卡列表信息

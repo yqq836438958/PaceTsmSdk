@@ -2,9 +2,10 @@
 package com.pace.processor.channel;
 
 import android.content.Context;
+import android.os.RemoteException;
 
-import com.pace.api.IApduChannel;
 import com.pace.common.ErrCode;
+import com.pace.tsm.service.IPaceApduChannel;
 import com.pace.tsm.utils.ByteUtil;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ApduChannel {
-    private IApduChannel mChannel = null;
+    private IPaceApduChannel mChannel = null;
     private boolean isChannelOpen = false;
     private static ApduChannel sInstance = null;
 
@@ -32,7 +33,7 @@ public class ApduChannel {
         return sInstance;
     }
 
-    public void setChannel(Context context, IApduChannel channel) {
+    public void setChannel(Context context, IPaceApduChannel channel) {
         if (channel == null) {
             channel = new DefaultChannel(context);
         }
@@ -86,7 +87,12 @@ public class ApduChannel {
         byte[] apduRsp = null;
         for (String cmd : input) {
             apduSrc = ByteUtil.toByteArray(cmd);
-            apduRsp = mChannel.transmit(apduSrc);
+            try {
+                apduRsp = mChannel.transmit(apduSrc);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             rsp.add(ByteUtil.toHexString(apduRsp));
         }
         return rsp;
@@ -97,7 +103,12 @@ public class ApduChannel {
             return true;
         }
         if (mChannel != null) {
-            isChannelOpen = mChannel.open();
+            try {
+                isChannelOpen = mChannel.open();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return isChannelOpen;
     }

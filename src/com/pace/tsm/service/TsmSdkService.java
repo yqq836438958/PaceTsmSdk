@@ -63,6 +63,11 @@ public class TsmSdkService extends Service {
         public int cardListQuery(String[] outputParam) throws RemoteException {
             return TsmApi.cardListQuery(outputParam);
         }
+
+        @Override
+        public void regist(IPaceApduChannel channel) throws RemoteException {
+            TsmApi.regist(channel);
+        }
     };
 
     @Override

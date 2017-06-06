@@ -13,7 +13,7 @@ import TRom.RomBaseInfo;
 import qrom.component.wup.QRomQuaFactory;
 import qrom.component.wup.QRomWupDataBuilder;
 
-public class RomUtil {
+public class QRomUtil {
     public static final String TAG = "DeviceUtil";
     private static Object g_lockOfRomBaseInfo = new Object();
     private static RomBaseInfo g_romBaseInfo = null;

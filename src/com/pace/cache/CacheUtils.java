@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 
 import com.pace.tsm.TsmApi;
+import com.pace.tsm.TsmApp;
 import com.pace.tsm.utils.ByteUtil;
 
 import java.io.ByteArrayInputStream;
@@ -84,7 +85,7 @@ public class CacheUtils {
     }
 
     private static SharedPreferences getSharePref() {
-        Context context = TsmApi.getGlobalContext();// WalletApp.getAppContext();
+        Context context = TsmApp.getAppContext();// WalletApp.getAppContext();
         SharedPreferences sharedPreferences = context.getSharedPreferences(sShareFile,
                 Context.MODE_PRIVATE);
         return sharedPreferences;

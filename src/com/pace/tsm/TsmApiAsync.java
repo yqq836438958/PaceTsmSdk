@@ -12,10 +12,16 @@ import com.pace.processor.Dispatcher.CardSwitchType;
 import com.pace.processor.Dispatcher.CardTransactionType;
 import com.pace.processor.Dispatcher.IBusinessType;
 import com.pace.processor.bean.ParamBean;
+import com.pace.processor.channel.ApduChannel;
+import com.pace.tsm.service.IPaceApduChannel;
 
-public class TsmApiAsync extends TsmApi {
+public class TsmApiAsync {
     public static interface ITsmApiCallback {
         void onCallback(int code, String result);
+    }
+
+    public static void regist(IPaceApduChannel apduChannel) {
+        ApduChannel.get().setChannel(TsmApp.getAppContext(), apduChannel);
     }
 
     public static void cardCplc(ITsmApiCallback callback) {

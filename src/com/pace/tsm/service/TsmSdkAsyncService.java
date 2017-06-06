@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.pace.tsm.TsmApiAsync;
+import com.pace.tsm.TsmApp;
 import com.pace.tsm.TsmApiAsync.ITsmApiCallback;
 
 public class TsmSdkAsyncService extends Service {
@@ -68,6 +69,11 @@ public class TsmSdkAsyncService extends Service {
         @Override
         public void cardListQuery(IPaceTsmSdkCallBack callback) throws RemoteException {
             TsmApiAsync.cardListQuery(getInnerApiCallback(callback));
+        }
+
+        @Override
+        public void regist(IPaceApduChannel channel) throws RemoteException {
+             TsmApiAsync.regist(channel);
         }
     };
 

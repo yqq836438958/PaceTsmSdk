@@ -5,6 +5,7 @@ import com.pace.common.SeqGenerator;
 import com.pace.constants.CommonConstants;
 import com.pace.log.LogPrint;
 import com.pace.tsm.TsmApi;
+import com.pace.tsm.TsmApp;
 import com.qq.jce.wup.UniPacket;
 import com.qq.taf.jce.JceStruct;
 
@@ -81,7 +82,7 @@ public abstract class BaseTosService
 
         UniPacket packet = createReqUnipackageV3(req);
 
-        IServerHandler serverHandler = ServerHandler.getInstance(TsmApi.getGlobalContext());
+        IServerHandler serverHandler = ServerHandler.getInstance(TsmApp.getAppContext());
 
         serverHandler.registerServerHandlerListener(this);
         serverHandler.setRequestEncrypt(getRequestEncrypt());
@@ -223,7 +224,7 @@ public abstract class BaseTosService
         if (req == null) {
             return null;
         }
-        IServerHandler serverHandler = ServerHandler.getInstance(TsmApi.getGlobalContext());
+        IServerHandler serverHandler = ServerHandler.getInstance(TsmApp.getAppContext());
         byte[] data = serverHandler.reqServerSync(createReqUnipackageV3(req));
         return parseJceFromBytes(data);
     }

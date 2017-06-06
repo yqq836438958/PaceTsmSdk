@@ -1,9 +1,6 @@
 
 package com.pace.tsm;
 
-import android.content.Context;
-
-import com.pace.api.IApduChannel;
 import com.pace.common.RET;
 import com.pace.constants.CommonConstants.NET_BUSINESS_TYPE;
 import com.pace.processor.Dispatcher.CardCplcType;
@@ -15,19 +12,14 @@ import com.pace.processor.Dispatcher.IBusinessType;
 import com.pace.processor.Dispatcher.CardTransactionType;
 import com.pace.processor.bean.ParamBean;
 import com.pace.processor.channel.ApduChannel;
+import com.pace.tsm.service.IPaceApduChannel;
 
 public class TsmApi {
     public static final int API_RUN_CROSS_DEV = 0;
     public static final int API_RUN_LOCAL = 1;
-    private static Context sContext = null;
 
-    public static Context getGlobalContext() {
-        return sContext;
-    }
-
-    public static void regist(Context context, IApduChannel apduChannel) {
-        sContext = context;
-        ApduChannel.get().setChannel(context, apduChannel);
+    public static void regist(IPaceApduChannel apduChannel) {
+        ApduChannel.get().setChannel(TsmApp.getAppContext(), apduChannel);
     }
 
     public static int cardIssue(String input, String[] output) {
