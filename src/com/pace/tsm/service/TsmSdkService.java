@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.pace.data.BleAccessPoint;
 import com.pace.tsm.TsmApi;
 
 public class TsmSdkService extends Service {
@@ -67,6 +68,12 @@ public class TsmSdkService extends Service {
         @Override
         public void regist(IPaceApduChannel channel) throws RemoteException {
             TsmApi.regist(channel);
+        }
+
+        @Override
+        public void registBle(BleAccessPoint point) throws RemoteException {
+            // TODO Auto-generated method stub
+            
         }
     };
 

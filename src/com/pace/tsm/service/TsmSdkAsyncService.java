@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.pace.data.BleAccessPoint;
 import com.pace.tsm.TsmApiAsync;
 import com.pace.tsm.TsmApp;
 import com.pace.tsm.TsmApiAsync.ITsmApiCallback;
@@ -74,6 +75,12 @@ public class TsmSdkAsyncService extends Service {
         @Override
         public void regist(IPaceApduChannel channel) throws RemoteException {
              TsmApiAsync.regist(channel);
+        }
+
+        @Override
+        public void registBle(BleAccessPoint point) throws RemoteException {
+            // TODO Auto-generated method stub
+            
         }
     };
 

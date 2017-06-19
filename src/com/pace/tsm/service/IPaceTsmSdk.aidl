@@ -1,7 +1,9 @@
 package com.pace.tsm.service;
 import com.pace.tsm.service.IPaceApduChannel;
-
+import com.pace.data.BleAccessPoint;
 interface IPaceTsmSdk {
+	void registBle(in BleAccessPoint point);
+
 	void regist(IPaceApduChannel channel);
 	/**
 	* 获取卡列表
